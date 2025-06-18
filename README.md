@@ -11,7 +11,7 @@ A flexible, zero-config skeleton generator for Chakra UI components.
 ## 🚀 Installation
 
 ```bash
-npm install chakra-auto-skeleton
+npm install @sedonawebservices/chakra-auto-skeleton
 ```
 
 ## 📦 Usage
@@ -19,7 +19,7 @@ npm install chakra-auto-skeleton
 ### Auto Mode (default)
 
 ```tsx
-import { AutoSkeleton } from "chakra-auto-skeleton";
+import { AutoSkeleton } from '@sedonawebservices/chakra-auto-skeleton';
 
 <AutoSkeleton loading={loading}>
   <Stack spacing={4}>
@@ -29,7 +29,7 @@ import { AutoSkeleton } from "chakra-auto-skeleton";
     <Image src="/banner.jpg" height="200px" />
     <Button>Submit</Button>
   </Stack>
-</AutoSkeleton>
+</AutoSkeleton>;
 ```
 
 ### Manual Mode
@@ -43,10 +43,10 @@ import { AutoSkeleton } from "chakra-auto-skeleton";
 
 ## 🛠 Options
 
-| Prop     | Type            | Default | Description                                      |
-|----------|-----------------|---------|--------------------------------------------------|
-| loading  | `boolean`       | `false` | Whether to show skeletons                       |
-| mode     | `'auto' | 'manual'` | `'auto'` | Toggle automatic detection vs manual override |
+| Prop    | Type      | Default   | Description               |
+| ------- | --------- | --------- | ------------------------- | --------------------------------------------- |
+| loading | `boolean` | `false`   | Whether to show skeletons |
+| mode    | `'auto'   | 'manual'` | `'auto'`                  | Toggle automatic detection vs manual override |
 
 ## 📄 License
 

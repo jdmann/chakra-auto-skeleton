@@ -1,30 +1,44 @@
 {
   "name": "@sedonawebservices/chakra-auto-skeleton",
-  "version": "0.1.2",
+  "version": "0.2.0",
+  "description": "Automatically generate skeleton components for Chakra UI",
+  "keywords": [
+    "chakra-ui",
+    "skeleton",
+    "loading",
+    "react",
+    "typescript"
+  ],
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.tsx",
     "dev": "tsup --watch",
     "lint": "eslint src --ext .ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "ladle": "ladle serve",
+    "build-ladle": "ladle build"
   },
   "peerDependencies": {
+    "@chakra-ui/react": ">=3",
     "react": ">=17",
-    "react-dom": ">=17",
-    "@chakra-ui/react": ">=3"
+    "react-dom": ">=17"
   },
   "devDependencies": {
     "@chakra-ui/react": "^3.0.0",
+    "@ladle/react": "5.0.3",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "tsup": "^7.0.0",
     "typescript": "^5.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0"
+    "vite": "^6.3.5"
   }
 }
