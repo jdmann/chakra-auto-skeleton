@@ -61,8 +61,9 @@ var getSkeletonProps = (props) => {
   return skeletonProps;
 };
 var getComponentName = (child) => {
-  var _a, _b;
-  return ((_a = child.type) == null ? void 0 : _a.displayName) || ((_b = child.type) == null ? void 0 : _b.name) || (typeof child.type === "string" ? child.type : "");
+  if (typeof child.type === "string")
+    return child.type;
+  return child.type.displayName || child.type.name || "";
 };
 var isLayoutComponent = (name) => ["Box", "Stack", "Flex", "Grid", "Container", "Wrap", "Center"].includes(name);
 var AutoSkeleton = ({
@@ -118,3 +119,4 @@ var AutoSkeleton = ({
 0 && (module.exports = {
   AutoSkeleton
 });
+//# sourceMappingURL=index.js.map

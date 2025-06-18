@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react";
 import React, { Children, cloneElement, isValidElement, ReactElement } from "react";
 
-type AutoSkeletonProps = {
+export type AutoSkeletonProps = {
   loading: boolean;
   mode?: "auto" | "manual";
   children: React.ReactNode;

@@ -1,1 +1,0 @@
-export { AutoSkeleton } from "./components/AutoSkeleton";
