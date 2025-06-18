@@ -1,8 +1,7 @@
-var __create = Object.create;
+"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -16,14 +15,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.tsx
@@ -34,9 +25,9 @@ __export(src_exports, {
 module.exports = __toCommonJS(src_exports);
 
 // src/components/AutoSkeleton.tsx
-var import_react = __toESM(require("react"));
-var import_react2 = require("@chakra-ui/react");
-var import_react3 = require("react");
+var import_react = require("@chakra-ui/react");
+var import_react2 = require("react");
+var import_jsx_runtime = require("react/jsx-runtime");
 var getSkeletonProps = (props) => {
   const allowed = [
     "height",
@@ -80,18 +71,18 @@ var AutoSkeleton = ({
   children
 }) => {
   if (!loading)
-    return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, children);
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children });
   const renderSkeletonForChild = (child) => {
     var _a, _b;
     const name = getComponentName(child);
     const props = getSkeletonProps(child.props);
     if (mode === "manual") {
       if (child.props["data-skeleton"]) {
-        return /* @__PURE__ */ import_react.default.createElement(import_react2.Skeleton, { ...props });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props });
       }
       if (isLayoutComponent(name) && ((_a = child.props) == null ? void 0 : _a.children)) {
-        return (0, import_react3.cloneElement)(child, {
-          children: /* @__PURE__ */ import_react.default.createElement(AutoSkeleton, { loading: true, mode: "manual" }, child.props.children)
+        return (0, import_react2.cloneElement)(child, {
+          children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AutoSkeleton, { loading: true, mode: "manual", children: child.props.children })
         });
       }
       return child;
@@ -99,29 +90,29 @@ var AutoSkeleton = ({
     switch (name) {
       case "Text":
       case "Heading":
-        return /* @__PURE__ */ import_react.default.createElement(import_react2.SkeletonText, { noOfLines: 1, spacing: "4", skeletonHeight: "1em", ...props });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.SkeletonText, { noOfLines: 1, spacing: "4", skeletonHeight: "1em", ...props });
       case "Avatar":
-        return /* @__PURE__ */ import_react.default.createElement(import_react2.SkeletonCircle, { size: child.props.boxSize || "40px", ...props });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.SkeletonCircle, { size: child.props.boxSize || "40px", ...props });
       case "Image":
       case "Button":
-        return /* @__PURE__ */ import_react.default.createElement(import_react2.Skeleton, { ...props, height: child.props.height || "40px" });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height: child.props.height || "40px" });
       default:
         if (isLayoutComponent(name) && ((_b = child.props) == null ? void 0 : _b.children)) {
-          return (0, import_react3.cloneElement)(child, {
-            children: /* @__PURE__ */ import_react.default.createElement(AutoSkeleton, { loading: true, mode: "auto" }, child.props.children)
+          return (0, import_react2.cloneElement)(child, {
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AutoSkeleton, { loading: true, mode: "auto", children: child.props.children })
           });
         }
         if (props.height || props.width || child.props["data-skeleton"]) {
-          return /* @__PURE__ */ import_react.default.createElement(import_react2.Skeleton, { ...props });
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props });
         }
         return child;
     }
   };
-  return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, import_react3.Children.map(children, (child) => {
-    if (!(0, import_react3.isValidElement)(child))
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: import_react2.Children.map(children, (child) => {
+    if (!(0, import_react2.isValidElement)(child))
       return child;
     return renderSkeletonForChild(child);
-  }));
+  }) });
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

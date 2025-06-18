@@ -1,18 +1,9 @@
-import React from "react";
 import {
-  Skeleton,
-  SkeletonText,
-  SkeletonCircle,
-  Avatar,
-  Image,
-  Text,
-  Heading,
-  Button,
-  Box,
-  Stack,
-  Flex,
+    Skeleton,
+    SkeletonCircle,
+    SkeletonText
 } from "@chakra-ui/react";
-import { isValidElement, cloneElement, Children, ReactElement } from "react";
+import React, { Children, cloneElement, isValidElement, ReactElement } from "react";
 
 type AutoSkeletonProps = {
   loading: boolean;
@@ -41,11 +32,9 @@ const getSkeletonProps = (props: Record<string, any>) => {
 };
 
 const getComponentName = (child: ReactElement): string => {
-  return (
-    child.type?.displayName ||
-    child.type?.name ||
-    (typeof child.type === "string" ? child.type : "")
-  );
+  if (typeof child.type === "string") return child.type;
+  // @ts-expect-error: displayName and name are common on function/class components
+  return child.type.displayName || child.type.name || "";
 };
 
 const isLayoutComponent = (name: string) =>
@@ -77,6 +66,7 @@ export const AutoSkeleton: React.FC<AutoSkeletonProps> = ({
     switch (name) {
       case "Text":
       case "Heading":
+        // @ts-expect-error: spacing is a valid prop for SkeletonText in Chakra UI
         return <SkeletonText noOfLines={1} spacing="4" skeletonHeight="1em" {...props} />;
       case "Avatar":
         return <SkeletonCircle size={child.props.boxSize || "40px"} {...props} />;
