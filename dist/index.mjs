@@ -101,19 +101,11 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
   if (!loading)
     return /* @__PURE__ */ jsx(Fragment, { children });
   const renderSkeletonForChild = (child) => {
-    var _a, _b, _c, _d;
+    var _a, _b;
     const name = getComponentName(child);
     const allProps = getSkeletonProps(child.props);
     const isButton = isButtonLikeComponent(child, name);
     const props = isButton ? { ...allProps, height: void 0, width: void 0 } : allProps;
-    console.log("\u{1F50D} Component Processing:", {
-      componentName: name,
-      isButton,
-      isText: isTextLikeComponent(child, name),
-      children: child.props.children,
-      type: typeof child.type,
-      typeString: (_b = (_a = child.type) == null ? void 0 : _a.toString) == null ? void 0 : _b.call(_a)
-    });
     if (typeof child.props.children === "string") {
     }
     if (mode === "manual") {
@@ -143,7 +135,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         }
         return /* @__PURE__ */ jsx(Skeleton, { ...props });
       }
-      if (isLayoutLikeComponent(child, name) && ((_c = child.props) == null ? void 0 : _c.children)) {
+      if (isLayoutLikeComponent(child, name) && ((_a = child.props) == null ? void 0 : _a.children)) {
         return cloneElement(child, {
           children: /* @__PURE__ */ jsx(Skeletize, { loading: true, mode: "manual", children: child.props.children })
         });
@@ -151,14 +143,6 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       return child;
     }
     if (isButtonLikeComponent(child, name)) {
-      console.log("\u{1F534} Button Detection Debug:", {
-        componentName: name,
-        children: child.props.children,
-        size: child.props.size,
-        colorScheme: child.props.colorScheme,
-        isButtonLike: true,
-        allProps: Object.keys(child.props)
-      });
       const buttonSize = child.props.size || "md";
       const buttonDimensions = {
         xs: { height: "24px", width: "80px" },
@@ -170,12 +154,6 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       const dimensions = buttonDimensions[buttonSize] || buttonDimensions.md;
       const height = child.props.height || dimensions.height;
       const width = child.props.width || dimensions.width;
-      console.log("\u{1F534} Button Skeleton Dimensions:", {
-        buttonSize,
-        height,
-        width,
-        dimensions
-      });
       return /* @__PURE__ */ jsx(Skeleton, { ...props, height, width });
     }
     if (isTextLikeComponent(child, name)) {
@@ -195,7 +173,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         return /* @__PURE__ */ jsx(Skeleton, { ...props, height: "40px", width: "120px" });
       }
     }
-    if (isLayoutLikeComponent(child, name) && ((_d = child.props) == null ? void 0 : _d.children)) {
+    if (isLayoutLikeComponent(child, name) && ((_b = child.props) == null ? void 0 : _b.children)) {
       return cloneElement(child, {
         children: /* @__PURE__ */ jsx(Skeletize, { loading: true, mode: "auto", children: child.props.children })
       });

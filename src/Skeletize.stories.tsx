@@ -445,18 +445,18 @@ export const DebugButtonDetection: Story = () => (
 
 export const ButtonDebugTest: Story = () => {
   const [logs, setLogs] = React.useState<string[]>([]);
-  
+
   // Capture console logs
   React.useEffect(() => {
     const originalLog = console.log;
     console.log = (...args) => {
       originalLog(...args);
-      const message = args.map(arg => 
-        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-      ).join(' ');
-      setLogs(prev => [...prev.slice(-10), message]); // Keep last 10 logs
+      const message = args
+        .map((arg) => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)))
+        .join(' ');
+      setLogs((prev) => [...prev.slice(-10), message]); // Keep last 10 logs
     };
-    
+
     return () => {
       console.log = originalLog;
     };
@@ -474,9 +474,15 @@ export const ButtonDebugTest: Story = () => {
           <h4>Loading State (should show button skeletons):</h4>
           <Skeletize loading={true}>
             <Stack direction="row" gap={3}>
-              <Button size="lg" colorScheme="blue">Large Button</Button>
-              <Button size="md" colorScheme="green">Medium Button</Button>
-              <Button size="sm" colorScheme="red">Small Button</Button>
+              <Button size="lg" colorScheme="blue">
+                Large Button
+              </Button>
+              <Button size="md" colorScheme="green">
+                Medium Button
+              </Button>
+              <Button size="sm" colorScheme="red">
+                Small Button
+              </Button>
             </Stack>
           </Skeletize>
         </div>
@@ -485,18 +491,29 @@ export const ButtonDebugTest: Story = () => {
           <h4>Not Loading State (should show actual buttons):</h4>
           <Skeletize loading={false}>
             <Stack direction="row" gap={3}>
-              <Button size="lg" colorScheme="blue">Large Button</Button>
-              <Button size="md" colorScheme="green">Medium Button</Button>
-              <Button size="sm" colorScheme="red">Small Button</Button>
+              <Button size="lg" colorScheme="blue">
+                Large Button
+              </Button>
+              <Button size="md" colorScheme="green">
+                Medium Button
+              </Button>
+              <Button size="sm" colorScheme="red">
+                Small Button
+              </Button>
             </Stack>
           </Skeletize>
         </div>
 
-        <div style={{ border: '1px solid blue', padding: '20px', maxHeight: '300px', overflow: 'auto' }}>
+        <div
+          style={{
+            border: '1px solid blue',
+            padding: '20px',
+            maxHeight: '300px',
+            overflow: 'auto',
+          }}
+        >
           <h4>Debug Console Output:</h4>
-          <pre style={{ fontSize: '10px', whiteSpace: 'pre-wrap' }}>
-            {logs.join('\n')}
-          </pre>
+          <pre style={{ fontSize: '10px', whiteSpace: 'pre-wrap' }}>{logs.join('\n')}</pre>
         </div>
       </div>
     </ChakraWrapper>

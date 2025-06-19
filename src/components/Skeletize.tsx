@@ -190,16 +190,6 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
     const isButton = isButtonLikeComponent(child, name);
     const props = isButton ? { ...allProps, height: undefined, width: undefined } : allProps;
 
-    // Debug logging for all components
-    console.log('🔍 Component Processing:', {
-      componentName: name,
-      isButton: isButton,
-      isText: isTextLikeComponent(child, name),
-      children: child.props.children,
-      type: typeof child.type,
-      typeString: child.type?.toString?.(),
-    });
-
     // Temporary debugging to understand text detection issues
     if (typeof child.props.children === 'string') {
       // Debug removed for production
@@ -256,16 +246,6 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
     // Enhanced component detection using both name and props
     // Check buttons FIRST to avoid conflicts with text detection
     if (isButtonLikeComponent(child, name)) {
-      // Debug logging for button detection
-      console.log('🔴 Button Detection Debug:', {
-        componentName: name,
-        children: child.props.children,
-        size: child.props.size,
-        colorScheme: child.props.colorScheme,
-        isButtonLike: true,
-        allProps: Object.keys(child.props),
-      });
-
       // Get the button size and apply appropriate dimensions
       const buttonSize = child.props.size || 'md';
       const buttonDimensions = {
@@ -280,13 +260,6 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
         buttonDimensions[buttonSize as keyof typeof buttonDimensions] || buttonDimensions.md;
       const height = child.props.height || dimensions.height;
       const width = child.props.width || dimensions.width;
-
-      console.log('🔴 Button Skeleton Dimensions:', {
-        buttonSize,
-        height,
-        width,
-        dimensions,
-      });
 
       // Apply skeleton props but override with our dimensions
       return <Skeleton {...props} height={height} width={width} />;
