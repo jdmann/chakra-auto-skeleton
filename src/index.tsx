@@ -1,2 +1,2 @@
-export { AutoSkeleton } from "./components/AutoSkeleton";
-export type { AutoSkeletonProps } from "./components/AutoSkeleton";
+export { Skeletize } from './components/Skeletize';
+export type { SkeletizeProps } from './components/Skeletize';

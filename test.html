@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoSkeleton Test</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-section {
+        margin-bottom: 40px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+      }
+      @keyframes skeleton-loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AutoSkeleton Component Test</h1>
+
+    <div class="test-section">
+      <h2>Expected Behavior:</h2>
+      <p>When loading=true, text and buttons should be replaced with skeleton placeholders.</p>
+      <p>When loading=false, original content should be shown.</p>
+    </div>
+
+    <div class="test-section">
+      <h2>Manual Skeleton Test (CSS-based):</h2>
+      <div>
+        <div style="height: 20px; width: 200px; margin-bottom: 10px" class="skeleton"></div>
+        <div style="height: 40px; width: 100px; margin-bottom: 10px" class="skeleton"></div>
+        <div style="height: 16px; width: 300px" class="skeleton"></div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Component Status:</h2>
+      <p>AutoSkeleton component build: <span id="build-status">Checking...</span></p>
+      <p>Chakra UI availability: <span id="chakra-status">Checking...</span></p>
+    </div>
+
+    <script>
+      // Check if our build exists
+      fetch('./dist/index.js')
+        .then((response) => {
+          if (response.ok) {
+            document.getElementById('build-status').textContent = '✅ Built successfully';
+          } else {
+            document.getElementById('build-status').textContent = '❌ Build not found';
+          }
+        })
+        .catch(() => {
+          document.getElementById('build-status').textContent = '❌ Build check failed';
+        });
+
+      // This would test Chakra UI if we could load it properly
+      document.getElementById('chakra-status').textContent = '⚠️ Requires proper setup';
+    </script>
+  </body>
+</html>

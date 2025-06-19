@@ -1,6 +1,6 @@
 {
-  "name": "@sedonawebservices/chakra-auto-skeleton",
-  "version": "0.2.0",
+  "name": "@sedonawebservices/skeletize-chakra-ui",
+  "version": "0.2.2",
   "description": "Automatically generate skeleton components for Chakra UI",
   "keywords": [
     "chakra-ui",

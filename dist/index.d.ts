@@ -1,10 +1,10 @@
 import React from 'react';
 
-type AutoSkeletonProps = {
+type SkeletizeProps = {
     loading: boolean;
-    mode?: "auto" | "manual";
+    mode?: 'auto' | 'manual';
     children: React.ReactNode;
 };
-declare const AutoSkeleton: React.FC<AutoSkeletonProps>;
+declare const Skeletize: React.FC<SkeletizeProps>;
 
-export { AutoSkeleton, type AutoSkeletonProps };
+export { Skeletize, type SkeletizeProps };
