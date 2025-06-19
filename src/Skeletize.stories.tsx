@@ -4,6 +4,7 @@ import {
   ChakraProvider,
   defaultSystem,
   Heading,
+  Skeleton,
   Stack,
   Text,
   Wrap,
@@ -519,3 +520,769 @@ export const ButtonDebugTest: Story = () => {
     </ChakraWrapper>
   );
 };
+
+export const ButtonLayoutTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Button Layout Tests</Heading>
+
+      {/* Vertical Stack (should work fine) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Vertical Stack (Column):
+        </Text>
+        <Skeletize loading={true}>
+          <Stack direction="column" gap={3}>
+            <Button size="lg">Large Button</Button>
+            <Button size="md">Medium Button</Button>
+            <Button size="sm">Small Button</Button>
+          </Stack>
+        </Skeletize>
+      </Box>
+
+      {/* Horizontal Stack (test for height preservation) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Horizontal Stack (Row):
+        </Text>
+        <Skeletize loading={true}>
+          <Stack direction="row" gap={3}>
+            <Button size="lg">Large Button</Button>
+            <Button size="md">Medium Button</Button>
+            <Button size="sm">Small Button</Button>
+          </Stack>
+        </Skeletize>
+      </Box>
+
+      {/* Flex container (another test) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Flex Container:
+        </Text>
+        <Skeletize loading={true}>
+          <Box display="flex" gap={3}>
+            <Button size="lg">Large Button</Button>
+            <Button size="md">Medium Button</Button>
+            <Button size="sm">Small Button</Button>
+          </Box>
+        </Skeletize>
+      </Box>
+
+      {/* Wrap container (for wrapping buttons) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Wrap Container:
+        </Text>
+        <Skeletize loading={true}>
+          <Wrap gap={3}>
+            <Button size="lg">Large Button</Button>
+            <Button size="md">Medium Button</Button>
+            <Button size="sm">Small Button</Button>
+            <Button size="xs">Extra Small</Button>
+            <Button size="xl">Extra Large</Button>
+          </Wrap>
+        </Skeletize>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const CSSDebugTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">CSS Debug Test</Heading>
+
+      {/* Show actual button dimensions first */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Actual Buttons (Not Loading):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Button size="lg" bg="blue.100">
+            Large Button
+          </Button>
+          <Button size="md" bg="green.100">
+            Medium Button
+          </Button>
+          <Button size="sm" bg="red.100">
+            Small Button
+          </Button>
+        </Stack>
+      </Box>
+
+      {/* Show skeleton versions */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Skeleton Buttons (Loading):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Show inline styles for comparison */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Manual Skeleton with Inline Styles:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeleton
+            height="48px"
+            width="140px"
+            minHeight="48px"
+            flexShrink={0}
+            flex="0 0 auto"
+            borderRadius="md"
+          />
+          <Skeleton
+            height="40px"
+            width="120px"
+            minHeight="40px"
+            flexShrink={0}
+            flex="0 0 auto"
+            borderRadius="md"
+          />
+          <Skeleton
+            height="32px"
+            width="96px"
+            minHeight="32px"
+            flexShrink={0}
+            flex="0 0 auto"
+            borderRadius="md"
+          />
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const FlexDebugTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Flex Debug Test</Heading>
+
+      {/* Test 1: Direct Box with flex properties */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Test 1: Box with flex properties
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Box
+            height="48px"
+            width="140px"
+            bg="gray.200"
+            borderRadius="md"
+            minHeight="48px"
+            flexShrink={0}
+            flex="0 0 auto"
+          />
+          <Box
+            height="40px"
+            width="120px"
+            bg="gray.200"
+            borderRadius="md"
+            minHeight="40px"
+            flexShrink={0}
+            flex="0 0 auto"
+          />
+          <Box
+            height="32px"
+            width="96px"
+            bg="gray.200"
+            borderRadius="md"
+            minHeight="32px"
+            flexShrink={0}
+            flex="0 0 auto"
+          />
+        </Stack>
+      </Box>
+
+      {/* Test 2: Direct Skeleton components */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Test 2: Direct Skeleton components
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeleton height="48px" width="140px" minHeight="48px" flexShrink={0} flex="0 0 auto" />
+          <Skeleton height="40px" width="120px" minHeight="40px" flexShrink={0} flex="0 0 auto" />
+          <Skeleton height="32px" width="96px" minHeight="32px" flexShrink={0} flex="0 0 auto" />
+        </Stack>
+      </Box>
+
+      {/* Test 3: Our Skeletize component */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Test 3: Skeletize component
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const BoxWrapperTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Box Wrapper Test</Heading>
+
+      {/* Test with Box wrapper around Skeleton */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Box-wrapped Skeleton approach:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Box minHeight="48px" flexShrink={0} flex="0 0 auto">
+            <Skeleton height="48px" width="140px" />
+          </Box>
+          <Box minHeight="40px" flexShrink={0} flex="0 0 auto">
+            <Skeleton height="40px" width="120px" />
+          </Box>
+          <Box minHeight="32px" flexShrink={0} flex="0 0 auto">
+            <Skeleton height="32px" width="96px" />
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Test with our updated Skeletize component */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Updated Skeletize component:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const MinHeightDebug: Story = () => {
+  const [showInspector, setShowInspector] = React.useState(false);
+
+  return (
+    <ChakraWrapper>
+      <Stack gap={6}>
+        <Heading size="lg">MinHeight Debug Test</Heading>
+
+        <Button onClick={() => setShowInspector(!showInspector)}>
+          {showInspector ? 'Hide' : 'Show'} CSS Inspector
+        </Button>
+
+        {/* Explicit minHeight values for comparison */}
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Manual Box with explicit minHeight:
+          </Text>
+          <Stack direction="row" gap={3}>
+            <Box
+              minHeight="48px"
+              height="48px"
+              width="140px"
+              bg="red.200"
+              borderRadius="md"
+              flexShrink={0}
+              flex="0 0 auto"
+              border="2px solid red"
+            >
+              <Text fontSize="xs" p={1}>
+                48px minH
+              </Text>
+            </Box>
+            <Box
+              minHeight="40px"
+              height="40px"
+              width="120px"
+              bg="green.200"
+              borderRadius="md"
+              flexShrink={0}
+              flex="0 0 auto"
+              border="2px solid green"
+            >
+              <Text fontSize="xs" p={1}>
+                40px minH
+              </Text>
+            </Box>
+            <Box
+              minHeight="32px"
+              height="32px"
+              width="96px"
+              bg="blue.200"
+              borderRadius="md"
+              flexShrink={0}
+              flex="0 0 auto"
+              border="2px solid blue"
+            >
+              <Text fontSize="xs" p={1}>
+                32px minH
+              </Text>
+            </Box>
+          </Stack>
+        </Box>
+
+        {/* Our Skeletize component with debug styling */}
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Skeletize component (should match above):
+          </Text>
+          <Stack direction="row" gap={3}>
+            <Box border="2px solid red" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="lg">Large Button</Button>
+              </Skeletize>
+            </Box>
+            <Box border="2px solid green" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="md">Medium Button</Button>
+              </Skeletize>
+            </Box>
+            <Box border="2px solid blue" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="sm">Small Button</Button>
+              </Skeletize>
+            </Box>
+          </Stack>
+        </Box>
+
+        {showInspector && (
+          <Box p={4} bg="gray.50" borderRadius="md">
+            <Text fontWeight="bold" mb={2}>
+              Instructions:
+            </Text>
+            <Text fontSize="sm">
+              1. Open browser developer tools (F12)
+              <br />
+              2. Use element inspector to examine the Skeletize components above
+              <br />
+              3. Check if the Box wrapper has minHeight property applied
+              <br />
+              4. Compare computed styles with the manual boxes
+              <br />
+              5. Look for any CSS overrides or conflicting styles
+            </Text>
+          </Box>
+        )}
+      </Stack>
+    </ChakraWrapper>
+  );
+};
+
+export const InlineStyleTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Inline Style Test</Heading>
+
+      {/* Test with inline styles to force height */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Box with inline styles (should work):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Box
+            style={{
+              minHeight: '48px',
+              height: '48px',
+              width: '140px',
+              flexShrink: 0,
+              flex: '0 0 auto',
+            }}
+            bg="red.100"
+            borderRadius="md"
+          >
+            <Skeleton height="48px" width="140px" />
+          </Box>
+          <Box
+            style={{
+              minHeight: '40px',
+              height: '40px',
+              width: '120px',
+              flexShrink: 0,
+              flex: '0 0 auto',
+            }}
+            bg="green.100"
+            borderRadius="md"
+          >
+            <Skeleton height="40px" width="120px" />
+          </Box>
+          <Box
+            style={{
+              minHeight: '32px',
+              height: '32px',
+              width: '96px',
+              flexShrink: 0,
+              flex: '0 0 auto',
+            }}
+            bg="blue.100"
+            borderRadius="md"
+          >
+            <Skeleton height="32px" width="96px" />
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Compare with our component */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Our Skeletize component:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const HardcodedHeightTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Hardcoded Height Test</Heading>
+
+      {/* Test with hardcoded height values */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Hardcoded Box heights:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Box
+            minH="48px"
+            h="48px"
+            w="140px"
+            flexShrink={0}
+            flex="0 0 auto"
+            bg="red.100"
+            borderRadius="md"
+          >
+            <Skeleton height="48px" width="140px" />
+          </Box>
+          <Box
+            minH="40px"
+            h="40px"
+            w="120px"
+            flexShrink={0}
+            flex="0 0 auto"
+            bg="green.100"
+            borderRadius="md"
+          >
+            <Skeleton height="40px" width="120px" />
+          </Box>
+          <Box
+            minH="32px"
+            h="32px"
+            w="96px"
+            flexShrink={0}
+            flex="0 0 auto"
+            bg="blue.100"
+            borderRadius="md"
+          >
+            <Skeleton height="32px" width="96px" />
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Test our component */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Our Skeletize component:
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Debug info */}
+      <Box p={4} bg="gray.50" borderRadius="md">
+        <Text fontWeight="bold" mb={2}>
+          Expected dimensions:
+        </Text>
+        <Text fontSize="sm">
+          Large (lg): 48px height × 140px width
+          <br />
+          Medium (md): 40px height × 120px width
+          <br />
+          Small (sm): 32px height × 96px width
+        </Text>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const ComprehensiveHeightTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={8}>
+      <Heading size="lg">Comprehensive Height Comparison</Heading>
+
+      <Text>
+        <strong>Instructions:</strong> Open browser dev tools console to see debug logs. All
+        horizontal rows should have consistent heights matching the labels.
+      </Text>
+
+      {/* Row 1: Actual buttons for reference */}
+      <Box>
+        <Text mb={3} fontWeight="bold" color="purple.600">
+          1. Reference: Actual Buttons (not loading)
+        </Text>
+        <Stack direction="row" gap={3} align="center">
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              48px × 140px
+            </Text>
+            <Button size="lg" colorScheme="blue">
+              Large Button
+            </Button>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              40px × 120px
+            </Text>
+            <Button size="md" colorScheme="green">
+              Medium Button
+            </Button>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              32px × 96px
+            </Text>
+            <Button size="sm" colorScheme="red">
+              Small Button
+            </Button>
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Row 2: Manual Box + Skeleton */}
+      <Box>
+        <Text mb={3} fontWeight="bold" color="blue.600">
+          2. Manual: Box wrapper + Skeleton (should work)
+        </Text>
+        <Stack direction="row" gap={3} align="start">
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              48px × 140px
+            </Text>
+            <Box
+              minH="48px"
+              h="48px"
+              w="140px"
+              flexShrink={0}
+              flex="0 0 auto"
+              bg="blue.50"
+              border="1px solid"
+              borderColor="blue.200"
+            >
+              <Skeleton height="48px" width="140px" />
+            </Box>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              40px × 120px
+            </Text>
+            <Box
+              minH="40px"
+              h="40px"
+              w="120px"
+              flexShrink={0}
+              flex="0 0 auto"
+              bg="green.50"
+              border="1px solid"
+              borderColor="green.200"
+            >
+              <Skeleton height="40px" width="120px" />
+            </Box>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              32px × 96px
+            </Text>
+            <Box
+              minH="32px"
+              h="32px"
+              w="96px"
+              flexShrink={0}
+              flex="0 0 auto"
+              bg="red.50"
+              border="1px solid"
+              borderColor="red.200"
+            >
+              <Skeleton height="32px" width="96px" />
+            </Box>
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Row 3: Our Skeletize component */}
+      <Box>
+        <Text mb={3} fontWeight="bold" color="red.600">
+          3. Our Skeletize: Button → Skeleton (should match above)
+        </Text>
+        <Stack direction="row" gap={3} align="start">
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              Should be 48px × 140px
+            </Text>
+            <Box border="1px solid" borderColor="blue.300" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="lg">Large Button</Button>
+              </Skeletize>
+            </Box>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              Should be 40px × 120px
+            </Text>
+            <Box border="1px solid" borderColor="green.300" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="md">Medium Button</Button>
+              </Skeletize>
+            </Box>
+          </Box>
+          <Box>
+            <Text fontSize="xs" mb={1}>
+              Should be 32px × 96px
+            </Text>
+            <Box border="1px solid" borderColor="red.300" borderRadius="md">
+              <Skeletize loading={true}>
+                <Button size="sm">Small Button</Button>
+              </Skeletize>
+            </Box>
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Analysis section */}
+      <Box p={4} bg="yellow.50" borderRadius="md" border="1px solid" borderColor="yellow.200">
+        <Text fontWeight="bold" mb={2}>
+          Analysis Instructions:
+        </Text>
+        <Text fontSize="sm">
+          1. Compare the heights of all three rows - they should be identical
+          <br />
+          2. Check browser console for debug logs showing calculated dimensions
+          <br />
+          3. Use browser dev tools to inspect the DOM structure of row 3<br />
+          4. Look for any CSS overrides or computed style differences
+          <br />
+          5. If row 2 works but row 3 doesn't, the issue is in our component logic
+        </Text>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const SizePropTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Size Prop Issue Test</Heading>
+
+      {/* Test buttons WITHOUT size prop */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Buttons WITHOUT size prop (should work):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button>No Size Button 1</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button>No Size Button 2</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button>No Size Button 3</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Test buttons WITH size prop */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Buttons WITH size prop (currently broken):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Test individual button sizes to isolate the issue */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Individual button sizes:
+        </Text>
+        <Stack gap={3}>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Large button (size="lg"):
+            </Text>
+            <Skeletize loading={true}>
+              <Button size="lg">Large Button Only</Button>
+            </Skeletize>
+          </Box>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Medium button (size="md"):
+            </Text>
+            <Skeletize loading={true}>
+              <Button size="md">Medium Button Only</Button>
+            </Skeletize>
+          </Box>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Small button (size="sm"):
+            </Text>
+            <Skeletize loading={true}>
+              <Button size="sm">Small Button Only</Button>
+            </Skeletize>
+          </Box>
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);

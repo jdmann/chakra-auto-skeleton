@@ -117,3 +117,55 @@ The button visibility issue has been completely resolved. All button components 
 - ✅ Work correctly in both auto and manual modes
 
 **Test Results**: All button stories now display properly in Ladle interface.
+
+---
+
+## 🔄 Latest Update: Flex Layout Height Fix
+
+### 🐛 Issue Identified
+
+Button skeletons were losing height when arranged horizontally in Stack/Flex containers.
+
+### 🛠️ Solution: Box Wrapper Approach
+
+Instead of applying flex properties directly to Skeleton components, wrap them in Box components:
+
+```typescript
+// OLD: Direct flex properties on Skeleton
+return (
+  <Skeleton
+    height={height}
+    width={width}
+    minHeight={height}
+    flexShrink={0}
+    flex="0 0 auto"
+  />
+);
+
+// NEW: Box wrapper with flex properties
+return (
+  <Box
+    minHeight={height}
+    flexShrink={0}
+    flex="0 0 auto"
+  >
+    <Skeleton
+      height={height}
+      width={width}
+    />
+  </Box>
+);
+```
+
+### 🎯 Benefits
+
+- **Flex-safe**: Box wrapper prevents height collapse in horizontal layouts
+- **Consistent**: Works reliably across all Chakra UI flex containers (Stack, Flex, Wrap)
+- **Clean separation**: Skeleton handles animation, Box handles layout
+
+### 🧪 Test Stories Added
+
+- `ButtonLayoutTest`: Tests vertical vs horizontal button arrangements
+- `FlexDebugTest`: Comprehensive flex behavior testing
+- `CSSDebugTest`: Direct comparison with actual buttons
+- `BoxWrapperTest`: Validates the Box wrapper approach

@@ -58,7 +58,8 @@ var getSkeletonProps = (props) => {
       skeletonProps[key] = props[key];
     }
   }
-  return skeletonProps;
+  const { size, colorScheme, variant, onClick, ...cleanProps } = skeletonProps;
+  return cleanProps;
 };
 var getComponentName = (child) => {
   if (typeof child.type === "string")
@@ -129,9 +130,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
   const renderSkeletonForChild = (child) => {
     var _a, _b;
     const name = getComponentName(child);
-    const allProps = getSkeletonProps(child.props);
-    const isButton = isButtonLikeComponent(child, name);
-    const props = isButton ? { ...allProps, height: void 0, width: void 0 } : allProps;
+    const props = getSkeletonProps(child.props);
     if (typeof child.props.children === "string") {
     }
     if (mode === "manual") {
@@ -148,10 +147,18 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
           const dimensions = buttonDimensions[buttonSize] || buttonDimensions.md;
           const height = child.props.height || dimensions.height;
           const width = child.props.width || dimensions.width;
-          const cleanProps = { ...props };
-          delete cleanProps.height;
-          delete cleanProps.width;
-          return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...cleanProps, height, width });
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            import_react.Box,
+            {
+              minH: height,
+              minHeight: height,
+              h: height,
+              flexShrink: 0,
+              flex: "0 0 auto",
+              display: "block",
+              children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height, width })
+            }
+          );
         }
         if (isTextLikeComponent(child, name)) {
           return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.SkeletonText, { noOfLines: 1, ...props });
@@ -180,7 +187,31 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       const dimensions = buttonDimensions[buttonSize] || buttonDimensions.md;
       const height = child.props.height || dimensions.height;
       const width = child.props.width || dimensions.width;
-      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height, width });
+      console.log("Button skeleton debug:", {
+        buttonSize,
+        dimensions,
+        height,
+        width,
+        childProps: child.props
+      });
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        import_react.Box,
+        {
+          minH: height,
+          minHeight: height,
+          h: height,
+          flexShrink: 0,
+          flex: "0 0 auto",
+          display: "block",
+          style: {
+            minHeight: height,
+            height,
+            flexShrink: 0,
+            flex: "0 0 auto"
+          },
+          children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height, width })
+        }
+      );
     }
     if (isTextLikeComponent(child, name)) {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.SkeletonText, { noOfLines: 1, ...props });
@@ -196,7 +227,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.SkeletonText, { noOfLines: 1, ...props });
       }
       if (child.props.onClick || child.props.colorScheme || child.props.variant) {
-        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height: "40px", width: "120px" });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Box, { minH: "40px", minHeight: "40px", h: "40px", flexShrink: 0, flex: "0 0 auto", display: "block", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height: "40px", width: "120px" }) });
       }
     }
     if (isLayoutLikeComponent(child, name) && ((_b = child.props) == null ? void 0 : _b.children)) {
@@ -221,7 +252,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         "btn"
       ];
       if (buttonKeywords.some((keyword) => content.includes(keyword))) {
-        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height: "40px", width: "120px" });
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Box, { minH: "40px", minHeight: "40px", h: "40px", flexShrink: 0, flex: "0 0 auto", display: "block", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Skeleton, { ...props, height: "40px", width: "120px" }) });
       }
     }
     return child;

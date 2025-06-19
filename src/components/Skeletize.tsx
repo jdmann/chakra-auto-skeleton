@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+import { Box, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
 import React, { Children, cloneElement, isValidElement, ReactElement } from 'react';
 
 export type SkeletizeProps = {
@@ -39,7 +39,10 @@ const getSkeletonProps = (props: Record<string, any>) => {
     }
   }
 
-  return skeletonProps;
+  // Explicitly exclude problematic props that don't belong on Skeleton
+  const { size, colorScheme, variant, onClick, ...cleanProps } = skeletonProps;
+
+  return cleanProps;
 };
 
 const getComponentName = (child: ReactElement): string => {
@@ -185,10 +188,8 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
   const renderSkeletonForChild = (child: ReactElement): React.ReactNode => {
     const name = getComponentName(child);
 
-    // Get skeleton props but exclude height/width for buttons to avoid conflicts
-    const allProps = getSkeletonProps(child.props);
-    const isButton = isButtonLikeComponent(child, name);
-    const props = isButton ? { ...allProps, height: undefined, width: undefined } : allProps;
+    // Get skeleton props with problematic props already filtered out
+    const props = getSkeletonProps(child.props);
 
     // Temporary debugging to understand text detection issues
     if (typeof child.props.children === 'string') {
@@ -214,11 +215,19 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
           const height = child.props.height || dimensions.height;
           const width = child.props.width || dimensions.width;
 
-          // Create clean props without height/width conflicts
-          const cleanProps = { ...props };
-          delete cleanProps.height;
-          delete cleanProps.width;
-          return <Skeleton {...cleanProps} height={height} width={width} />;
+          // Props are already cleaned by getSkeletonProps
+          return (
+            <Box
+              minH={height}
+              minHeight={height}
+              h={height}
+              flexShrink={0}
+              flex="0 0 auto"
+              display="block"
+            >
+              <Skeleton {...props} height={height} width={width} />
+            </Box>
+          );
         }
         if (isTextLikeComponent(child, name)) {
           return <SkeletonText noOfLines={1} {...props} />;
@@ -261,8 +270,34 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
       const height = child.props.height || dimensions.height;
       const width = child.props.width || dimensions.width;
 
-      // Apply skeleton props but override with our dimensions
-      return <Skeleton {...props} height={height} width={width} />;
+      // Debug logging
+      console.log('Button skeleton debug:', {
+        buttonSize,
+        dimensions,
+        height,
+        width,
+        childProps: child.props,
+      });
+
+      // Apply skeleton props with flex-safe dimensions
+      return (
+        <Box
+          minH={height}
+          minHeight={height}
+          h={height}
+          flexShrink={0}
+          flex="0 0 auto"
+          display="block"
+          style={{
+            minHeight: height,
+            height: height,
+            flexShrink: 0,
+            flex: '0 0 auto',
+          }}
+        >
+          <Skeleton {...props} height={height} width={width} />
+        </Box>
+      );
     }
 
     if (isTextLikeComponent(child, name)) {
@@ -290,7 +325,11 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
       // Check if this has button-like behavior
       if (child.props.onClick || child.props.colorScheme || child.props.variant) {
         // Use default medium button dimensions for fallback
-        return <Skeleton {...props} height="40px" width="120px" />;
+        return (
+          <Box minH="40px" minHeight="40px" h="40px" flexShrink={0} flex="0 0 auto" display="block">
+            <Skeleton {...props} height="40px" width="120px" />
+          </Box>
+        );
       }
     }
 
@@ -326,7 +365,11 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
       ];
       if (buttonKeywords.some((keyword) => content.includes(keyword))) {
         // Use default medium button dimensions for button-like content
-        return <Skeleton {...props} height="40px" width="120px" />;
+        return (
+          <Box minH="40px" minHeight="40px" h="40px" flexShrink={0} flex="0 0 auto" display="block">
+            <Skeleton {...props} height="40px" width="120px" />
+          </Box>
+        );
       }
     }
 
