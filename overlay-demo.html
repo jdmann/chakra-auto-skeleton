@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overlay Strategy Demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .demo-section {
+        margin: 40px 0;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+      }
+      .strategy-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .strategy-box {
+        padding: 16px;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+      }
+      .replace-strategy {
+        background-color: #fef2f2;
+        border-color: #fca5a5;
+      }
+      .overlay-strategy {
+        background-color: #f0fdf4;
+        border-color: #86efac;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2d3748;
+      }
+      .highlight {
+        background-color: #fef7cd;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+      pre {
+        background-color: #f7fafc;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      .benefit {
+        color: #059669;
+        font-weight: 600;
+      }
+      .limitation {
+        color: #dc2626;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎯 Skeletize Overlay Strategy Demo</h1>
+
+    <div class="demo-section">
+      <h2>🚀 Revolutionary Approach</h2>
+      <p>
+        The <span class="highlight">Overlay Strategy</span> solves the fundamental problem of
+        skeleton loading: <strong>getting the exact dimensions right</strong>.
+      </p>
+
+      <p>Instead of guessing component sizes or maintaining complex mapping tables, we:</p>
+      <ol>
+        <li>
+          <strong>Render the actual component invisibly</strong> to establish perfect dimensions
+        </li>
+        <li><strong>Overlay a skeleton</strong> that matches exactly</li>
+        <li><strong>Get pixel-perfect results</strong> automatically</li>
+      </ol>
+    </div>
+
+    <div class="demo-section">
+      <h2>📊 Strategy Comparison</h2>
+
+      <div class="strategy-comparison">
+        <div class="strategy-box replace-strategy">
+          <h3>🔄 Replace Strategy (Traditional)</h3>
+          <ul>
+            <li class="benefit">✅ Faster performance</li>
+            <li class="benefit">✅ Simple implementation</li>
+            <li class="limitation">❌ Hardcoded size mappings</li>
+            <li class="limitation">❌ Inaccurate for custom styling</li>
+            <li class="limitation">❌ High maintenance overhead</li>
+          </ul>
+        </div>
+
+        <div class="strategy-box overlay-strategy">
+          <h3>🎯 Overlay Strategy (New)</h3>
+          <ul>
+            <li class="benefit">✅ Pixel-perfect accuracy</li>
+            <li class="benefit">✅ Works with any component</li>
+            <li class="benefit">✅ Zero configuration</li>
+            <li class="benefit">✅ Automatic custom component support</li>
+            <li class="limitation">❌ Slightly slower (minimal impact)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>💡 How It Works</h2>
+
+      <h3>Technical Implementation:</h3>
+      <pre><code>&lt;Box position="relative"&gt;
+  &lt;!-- Hidden component establishes dimensions --&gt;
+  &lt;Box visibility="hidden" aria-hidden="true"&gt;
+    &lt;Button size="lg" px={8}&gt;Custom Button&lt;/Button&gt;
+  &lt;/Box&gt;
+  
+  &lt;!-- Skeleton overlays with perfect sizing --&gt;
+  &lt;Box position="absolute" top={0} left={0} right={0} bottom={0}&gt;
+    &lt;Skeleton width="100%" height="100%" /&gt;
+  &lt;/Box&gt;
+&lt;/Box&gt;</code></pre>
+    </div>
+
+    <div class="demo-section">
+      <h2>🎮 Usage Examples</h2>
+
+      <h3>Basic Usage:</h3>
+      <pre><code>import { Skeletize } from '@sedonawebservices/skeletize-chakra-ui';
+
+// Pixel-perfect skeletons for any component
+&lt;Skeletize loading={true} strategy="overlay"&gt;
+  &lt;Button size="xl" px={8}&gt;Large Button&lt;/Button&gt;
+  &lt;Heading size="lg"&gt;Perfect Heading&lt;/Heading&gt;
+  &lt;CustomComponent width="300px"&gt;Even custom components!&lt;/CustomComponent&gt;
+&lt;/Skeletize&gt;</code></pre>
+
+      <h3>Complex Layouts:</h3>
+      <pre><code>&lt;Skeletize loading={true} strategy="overlay"&gt;
+  &lt;Stack gap={4}&gt;
+    &lt;Box display="flex" justifyContent="space-between"&gt;
+      &lt;Heading size="lg"&gt;Dashboard&lt;/Heading&gt;
+      &lt;Button size="sm" variant="outline"&gt;Settings&lt;/Button&gt;
+    &lt;/Box&gt;
+    
+    &lt;Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={4}&gt;
+      &lt;StatCard value="12,345" label="Users" /&gt;
+      &lt;StatCard value="$54,321" label="Revenue" /&gt;
+      &lt;StatCard value="3.2%" label="Conversion" /&gt;
+    &lt;/Box&gt;
+  &lt;/Stack&gt;
+&lt;/Skeletize&gt;</code></pre>
+    </div>
+
+    <div class="demo-section">
+      <h2>🎯 Perfect For</h2>
+      <ul>
+        <li><strong>Custom Components</strong> - No more manual size mappings</li>
+        <li><strong>Complex Layouts</strong> - Preserves exact spacing and alignment</li>
+        <li><strong>Dynamic Content</strong> - Adapts to any component size automatically</li>
+        <li><strong>Framework Migration</strong> - Strategy works across UI frameworks</li>
+        <li><strong>Rapid Development</strong> - Zero configuration skeleton loading</li>
+      </ul>
+    </div>
+
+    <div class="demo-section">
+      <h2>🚀 Try It Now</h2>
+      <p>Install and start using the overlay strategy today:</p>
+
+      <pre><code>npm install @sedonawebservices/skeletize-chakra-ui
+
+// In your component
+&lt;Skeletize loading={loading} strategy="overlay"&gt;
+  {/* Your components here - they'll get perfect skeletons! */}
+&lt;/Skeletize&gt;</code></pre>
+
+      <p>
+        <strong>No configuration needed</strong> - the overlay strategy automatically provides
+        pixel-perfect skeletons for any component!
+      </p>
+    </div>
+
+    <div class="demo-section">
+      <h2>📈 Future Impact</h2>
+      <p>This overlay approach represents the future of skeleton loading:</p>
+      <ul>
+        <li>
+          <strong>Framework Agnostic</strong> - Will work with Tailwind, MUI, Ant Design, etc.
+        </li>
+        <li><strong>Zero Maintenance</strong> - No more updating size mapping tables</li>
+        <li><strong>Perfect Accuracy</strong> - Skeleton layouts that never shift</li>
+        <li><strong>Developer Friendly</strong> - Works with any component out of the box</li>
+      </ul>
+    </div>
+  </body>
+</html>

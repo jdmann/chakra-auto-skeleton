@@ -1,17 +1,20 @@
 # @sedonawebservices/skeletize-chakra-ui
 
-Automatically generate skeleton components for Chakra UI applications with enhanced component detection and Chakra UI v3 compatibility.
+Automatically generate skeleton components for Chakra UI applications with intelligent component detection and size-aware skeletons.
 
 ## ✨ Features
 
-- 🎯 **Smart Component Detection**: Identifies Chakra UI components by both name and props
-- 🔄 **Auto & Manual Modes**: Choose between automatic skeleton generation or manual control
+- 🎯 **Smart Component Detection**: Automatically detects Chakra UI components (Button, Text, Heading, etc.)
+- 📏 **Size-Aware Skeletons**: Handles different component sizes (xs, sm, md, lg, xl) with appropriate skeleton dimensions
+- 🎨 **Intelligent Skeleton Types**: Uses appropriate skeleton types (Skeleton, SkeletonText, SkeletonCircle) based on component type
+- ⚡ **Performance**: Lightweight replace strategy - no component double-rendering
 - 📱 **TypeScript Support**: Full TypeScript definitions included
 - 🎨 **Chakra UI v3 Compatible**: Works with the latest Chakra UI version
-- ⚡ **Enhanced Prop Detection**: Robust fallback mechanisms for component identification
 - ♻️ **Preserves Layout Structure**: Box, Stack, Flex, etc. maintain their structure
 - 🐛 **Reliable Loading States**: Fixed issues with Button and Text component skeleton conversion
 - 🎭 **Avatar Support**: Enhanced Avatar component detection with circular element fallbacks
+- 🎮 **Auto & Manual Modes**: Choose between automatic skeleton generation or manual control
+- 🎨 **CSS Safe**: Prevents layout collapse in flex containers with proper sizing constraints
 
 ## 🚀 Installation
 
@@ -58,6 +61,30 @@ function MyComponent() {
 </Skeletize>
 ```
 
+### Size-Aware Skeletons
+
+The component automatically handles different sizes:
+
+```tsx
+import { Skeletize } from '@sedonawebservices/skeletize-chakra-ui';
+
+function MyComponent() {
+  const [loading, setLoading] = useState(true);
+
+  return (
+    <Skeletize loading={loading}>
+      <Stack gap={4}>
+        <Heading size="lg">Large Heading</Heading>
+        <Heading size="sm">Small Heading</Heading>
+        <Button size="xl">Extra Large Button</Button>
+        <Button size="xs">Extra Small Button</Button>
+        <Text fontSize="lg">Large Text</Text>
+        <Text fontSize="sm">Small Text</Text>
+      </Stack>
+    </Skeletize>
+  );
+```
+
 ## 🔍 Component Detection
 
 The Skeletize component uses multiple strategies to identify Chakra UI components:
@@ -71,7 +98,8 @@ The Skeletize component uses multiple strategies to identify Chakra UI component
 ## 📋 Supported Components
 
 - **Text Components**: `Text`, `Heading` → `SkeletonText`
-- **Button Components**: `Button` → `Skeleton` with size-aware dimensions (xs: 24×80px, sm: 32×96px, md: 40×120px, lg: 48×140px, xl: 56×160px)
+- **Button Components**: `Button` → `Skeleton` with size-aware dimensions
+  - xs: 24×80px, sm: 32×96px, md: 40×120px, lg: 48×140px, xl: 56×160px
 - **Avatar Components**: `Avatar`, circular elements with avatar-like props → `SkeletonCircle`
 - **Image Components**: `Image` → `Skeleton`
 - **Layout Components**: `Box`, `Stack`, `Flex`, etc. → Wraps children with Skeletize

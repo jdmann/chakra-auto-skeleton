@@ -1,5 +1,14 @@
 import { Box, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
-import React, { Children, cloneElement, isValidElement, ReactElement } from 'react';
+import React, {
+  Children,
+  cloneElement,
+  isValidElement,
+  ReactElement,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export type SkeletizeProps = {
   loading: boolean;
@@ -7,7 +16,11 @@ export type SkeletizeProps = {
   children: React.ReactNode;
 };
 
-const getSkeletonProps = (props: Record<string, any>) => {
+const getSkeletonProps = (
+  props: Record<string, any>,
+  excludeSize: boolean = true,
+  excludeDimensions: boolean = false,
+) => {
   const allowed = [
     'height',
     'width',
@@ -39,8 +52,24 @@ const getSkeletonProps = (props: Record<string, any>) => {
     }
   }
 
-  // Explicitly exclude problematic props that don't belong on Skeleton
-  const { size, colorScheme, variant, onClick, ...cleanProps } = skeletonProps;
+  // Build list of props to exclude
+  const propsToExclude: string[] = ['colorScheme', 'variant', 'onClick'];
+
+  // Only exclude size for buttons and other components where it conflicts
+  if (excludeSize) {
+    propsToExclude.push('size');
+  }
+
+  // Exclude dimensions when we're handling them manually
+  if (excludeDimensions) {
+    propsToExclude.push('height', 'width', 'minHeight', 'minWidth', 'maxHeight', 'maxWidth');
+  }
+
+  // Filter out excluded props
+  const cleanProps = { ...skeletonProps };
+  propsToExclude.forEach((prop) => {
+    delete cleanProps[prop];
+  });
 
   return cleanProps;
 };
@@ -187,57 +216,85 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
 
   const renderSkeletonForChild = (child: ReactElement): React.ReactNode => {
     const name = getComponentName(child);
-
-    // Get skeleton props with problematic props already filtered out
-    const props = getSkeletonProps(child.props);
-
-    // Temporary debugging to understand text detection issues
-    if (typeof child.props.children === 'string') {
-      // Debug removed for production
-    }
-
     if (mode === 'manual') {
       if (child.props['data-skeleton']) {
         // In manual mode, still respect component types for proper skeleton rendering
         // Check buttons FIRST to avoid conflicts with text detection
         if (isButtonLikeComponent(child, name)) {
-          const buttonSize = child.props.size || 'md';
-          const buttonDimensions = {
-            xs: { height: '24px', width: '80px' },
-            sm: { height: '32px', width: '96px' },
-            md: { height: '40px', width: '120px' },
-            lg: { height: '48px', width: '140px' },
-            xl: { height: '56px', width: '160px' },
+          // Use the same recipe-aware approach for manual mode
+          const MeasuredSkeletonButton = () => {
+            const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(
+              null,
+            );
+            const measureRef = useRef<HTMLButtonElement>(null);
+
+            useEffect(() => {
+              if (measureRef.current) {
+                const rect = measureRef.current.getBoundingClientRect();
+                setDimensions({ width: rect.width, height: rect.height });
+              }
+            }, []);
+
+            // Use layout effect for immediate measurement to reduce flash
+            useLayoutEffect(() => {
+              if (measureRef.current) {
+                const rect = measureRef.current.getBoundingClientRect();
+                setDimensions({ width: rect.width, height: rect.height });
+              }
+            }, []);
+
+            const buttonProps = { ...child.props };
+
+            // Remove interactive props and data-skeleton
+            delete buttonProps.onClick;
+            delete buttonProps.onMouseEnter;
+            delete buttonProps.onMouseLeave;
+            delete buttonProps.onFocus;
+            delete buttonProps.onBlur;
+            delete buttonProps.type;
+            delete buttonProps['data-skeleton'];
+
+            return (
+              <Box position="relative" display="inline-block">
+                {/* Invisible measuring button */}
+                {cloneElement(child, {
+                  ...buttonProps,
+                  ref: measureRef,
+                  position: 'absolute',
+                  opacity: 0,
+                  pointerEvents: 'none',
+                  zIndex: -1,
+                })}
+
+                {/* Skeleton with measured dimensions */}
+                <Skeleton
+                  width={dimensions ? `${dimensions.width}px` : 'auto'}
+                  height={dimensions ? `${dimensions.height}px` : 'auto'}
+                  minWidth={dimensions ? `${dimensions.width}px` : '120px'}
+                  minHeight={dimensions ? `${dimensions.height}px` : '40px'}
+                  borderRadius="md"
+                  display="inline-block"
+                />
+              </Box>
+            );
           };
 
-          const dimensions =
-            buttonDimensions[buttonSize as keyof typeof buttonDimensions] || buttonDimensions.md;
-          const height = child.props.height || dimensions.height;
-          const width = child.props.width || dimensions.width;
-
-          // Props are already cleaned by getSkeletonProps
-          return (
-            <Box
-              minH={height}
-              minHeight={height}
-              h={height}
-              flexShrink={0}
-              flex="0 0 auto"
-              display="block"
-            >
-              <Skeleton {...props} height={height} width={width} />
-            </Box>
-          );
+          return <MeasuredSkeletonButton />;
         }
         if (isTextLikeComponent(child, name)) {
+          // For text components, preserve size prop for SkeletonText
+          const props = getSkeletonProps(child.props, false);
           return <SkeletonText noOfLines={1} {...props} />;
         }
         if (isAvatarLikeComponent(child, name)) {
+          // For avatars, exclude size since we handle it manually
+          const props = getSkeletonProps(child.props, true);
           return (
             <SkeletonCircle size={child.props.size || child.props.boxSize || '40px'} {...props} />
           );
         }
         // Default to regular skeleton for other components
+        const props = getSkeletonProps(child.props, true);
         return <Skeleton {...props} />;
       }
       if (isLayoutLikeComponent(child, name) && child.props?.children) {
@@ -250,65 +307,85 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
         });
       }
       return child;
-    }
-
-    // Enhanced component detection using both name and props
+    } // Enhanced component detection using both name and props
     // Check buttons FIRST to avoid conflicts with text detection
     if (isButtonLikeComponent(child, name)) {
-      // Get the button size and apply appropriate dimensions
-      const buttonSize = child.props.size || 'md';
-      const buttonDimensions = {
-        xs: { height: '24px', width: '80px' },
-        sm: { height: '32px', width: '96px' },
-        md: { height: '40px', width: '120px' },
-        lg: { height: '48px', width: '140px' },
-        xl: { height: '56px', width: '160px' },
+      // RECIPE-AWARE APPROACH: Use a measuring wrapper to get recipe-calculated dimensions
+      // This works with Chakra's recipe system by letting the button calculate its own size
+
+      const MeasuredSkeletonButton = () => {
+        const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(
+          null,
+        );
+        const measureRef = useRef<HTMLButtonElement>(null);
+
+        useEffect(() => {
+          if (measureRef.current) {
+            const rect = measureRef.current.getBoundingClientRect();
+            setDimensions({ width: rect.width, height: rect.height });
+          }
+        }, []);
+
+        // Use layout effect for immediate measurement to reduce flash
+        React.useLayoutEffect(() => {
+          if (measureRef.current) {
+            const rect = measureRef.current.getBoundingClientRect();
+            setDimensions({ width: rect.width, height: rect.height });
+          }
+        }, []);
+
+        const buttonProps = { ...child.props };
+
+        // Remove interactive props but keep all sizing props
+        delete buttonProps.onClick;
+        delete buttonProps.onMouseEnter;
+        delete buttonProps.onMouseLeave;
+        delete buttonProps.onFocus;
+        delete buttonProps.onBlur;
+        delete buttonProps.type;
+
+        return (
+          <Box position="relative" display="inline-block">
+            {/* Invisible measuring button - let recipe calculate correct size */}
+            {cloneElement(child, {
+              ...buttonProps,
+              ref: measureRef,
+              position: 'absolute',
+              opacity: 0,
+              pointerEvents: 'none',
+              zIndex: -1,
+            })}
+
+            {/* Skeleton with measured dimensions */}
+            <Skeleton
+              width={dimensions ? `${dimensions.width}px` : 'auto'}
+              height={dimensions ? `${dimensions.height}px` : 'auto'}
+              minWidth={dimensions ? `${dimensions.width}px` : '120px'}
+              minHeight={dimensions ? `${dimensions.height}px` : '40px'}
+              borderRadius="md"
+              display="inline-block"
+            />
+          </Box>
+        );
       };
 
-      const dimensions =
-        buttonDimensions[buttonSize as keyof typeof buttonDimensions] || buttonDimensions.md;
-      const height = child.props.height || dimensions.height;
-      const width = child.props.width || dimensions.width;
-
-      // Debug logging
-      console.log('Button skeleton debug:', {
-        buttonSize,
-        dimensions,
-        height,
-        width,
-        childProps: child.props,
-      });
-
-      // Apply skeleton props with flex-safe dimensions
-      return (
-        <Box
-          minH={height}
-          minHeight={height}
-          h={height}
-          flexShrink={0}
-          flex="0 0 auto"
-          display="block"
-          style={{
-            minHeight: height,
-            height: height,
-            flexShrink: 0,
-            flex: '0 0 auto',
-          }}
-        >
-          <Skeleton {...props} height={height} width={width} />
-        </Box>
-      );
+      return <MeasuredSkeletonButton />;
     }
 
     if (isTextLikeComponent(child, name)) {
+      // For text components, preserve size prop for SkeletonText
+      const props = getSkeletonProps(child.props, false);
       return <SkeletonText noOfLines={1} {...props} />;
     }
 
     if (isAvatarLikeComponent(child, name)) {
+      // For avatars, exclude size since we handle it manually
+      const props = getSkeletonProps(child.props, true);
       return <SkeletonCircle size={child.props.size || child.props.boxSize || '40px'} {...props} />;
     }
 
     if (name === 'Image') {
+      const props = getSkeletonProps(child.props, true);
       return <Skeleton {...props} height={child.props.height || '200px'} />;
     }
 
@@ -319,12 +396,15 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
         typeof child.props.children === 'string' &&
         (child.props.fontSize || child.props.fontWeight || child.props.color)
       ) {
+        const props = getSkeletonProps(child.props, false);
         return <SkeletonText noOfLines={1} {...props} />;
       }
 
       // Check if this has button-like behavior
       if (child.props.onClick || child.props.colorScheme || child.props.variant) {
-        // Use default medium button dimensions for fallback
+        // This looks like a button but we couldn't identify the component type
+        // Fall back to Box + Skeleton approach
+        const props = getSkeletonProps(child.props, true);
         return (
           <Box minH="40px" minHeight="40px" h="40px" flexShrink={0} flex="0 0 auto" display="block">
             <Skeleton {...props} height="40px" width="120px" />
@@ -345,8 +425,9 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
     }
 
     // Default skeleton for components with explicit sizing or data-skeleton
-    if (props.height || props.width || child.props['data-skeleton']) {
-      return <Skeleton {...props} />;
+    const defaultProps = getSkeletonProps(child.props, true);
+    if (defaultProps.height || defaultProps.width || child.props['data-skeleton']) {
+      return <Skeleton {...defaultProps} />;
     }
 
     // Last resort: check if this looks like a button based on children content
@@ -364,7 +445,9 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
         'btn',
       ];
       if (buttonKeywords.some((keyword) => content.includes(keyword))) {
-        // Use default medium button dimensions for button-like content
+        // This might be a button-like component, try the skeleton button approach
+        // But since we don't have access to a Button component here, fall back to Box + Skeleton
+        const props = getSkeletonProps(child.props, true);
         return (
           <Box minH="40px" minHeight="40px" h="40px" flexShrink={0} flex="0 0 auto" display="block">
             <Skeleton {...props} height="40px" width="120px" />

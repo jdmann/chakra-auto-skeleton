@@ -1286,3 +1286,574 @@ export const SizePropTest: Story = () => (
     </Stack>
   </ChakraWrapper>
 );
+
+export const SizeComponentTest: Story = () => (
+  <ChakraWrapper>
+    <Stack gap={6}>
+      <Heading size="lg">Size Component Issues Test</Heading>
+
+      {/* Test Headings with size props */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Headings with size props:
+        </Text>
+        <Stack gap={3}>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Heading size="xl":
+            </Text>
+            <Skeletize loading={true}>
+              <Heading size="xl">Extra Large Heading</Heading>
+            </Skeletize>
+          </Box>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Heading size="lg":
+            </Text>
+            <Skeletize loading={true}>
+              <Heading size="lg">Large Heading</Heading>
+            </Skeletize>
+          </Box>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Heading size="md":
+            </Text>
+            <Skeletize loading={true}>
+              <Heading size="md">Medium Heading</Heading>
+            </Skeletize>
+          </Box>
+          <Box>
+            <Text fontSize="sm" mb={1}>
+              Heading size="sm":
+            </Text>
+            <Skeletize loading={true}>
+              <Heading size="sm">Small Heading</Heading>
+            </Skeletize>
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* Test Buttons with size props (horizontal layout) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Buttons with size props (horizontal):
+        </Text>
+        <Stack direction="row" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Test Buttons with size props (vertical layout) */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Buttons with size props (vertical):
+        </Text>
+        <Stack direction="column" gap={3}>
+          <Skeletize loading={true}>
+            <Button size="lg">Large Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="md">Medium Button</Button>
+          </Skeletize>
+          <Skeletize loading={true}>
+            <Button size="sm">Small Button</Button>
+          </Skeletize>
+        </Stack>
+      </Box>
+
+      {/* Test components WITHOUT size props for comparison */}
+      <Box>
+        <Text mb={2} fontWeight="bold">
+          Components WITHOUT size props (should work fine):
+        </Text>
+        <Stack gap={3}>
+          <Skeletize loading={true}>
+            <Heading>Default Heading</Heading>
+          </Skeletize>
+          <Stack direction="row" gap={3}>
+            <Skeletize loading={true}>
+              <Button>Default Button 1</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button>Default Button 2</Button>
+            </Skeletize>
+          </Stack>
+        </Stack>
+      </Box>
+    </Stack>
+  </ChakraWrapper>
+);
+
+export const ButtonSizeAccuracy: Story = () => (
+  <ChakraWrapper>
+    <Box>
+      <Heading size="md" mb={4}>
+        Button Size Accuracy Test
+      </Heading>
+      <Text mb={4} fontSize="sm" color="gray.600">
+        Testing that skeleton dimensions match actual button sizes for different size props.
+      </Text>
+
+      <Stack gap={6}>
+        <Box>
+          <Heading size="sm" mb={2}>
+            Loading State (Skeletons)
+          </Heading>
+          <Wrap gap={4}>
+            <Skeletize loading={true}>
+              <Button size="xs">Extra Small</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="sm">Small</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="md">Medium</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="lg">Large</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="xl">Extra Large</Button>
+            </Skeletize>
+          </Wrap>
+        </Box>
+
+        <Box>
+          <Heading size="sm" mb={2}>
+            Actual Buttons (Reference)
+          </Heading>
+          <Wrap gap={4}>
+            <Button size="xs">Extra Small</Button>
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg">Large</Button>
+            <Button size="xl">Extra Large</Button>
+          </Wrap>
+        </Box>
+
+        <Box>
+          <Heading size="sm" mb={2}>
+            Button Variants
+          </Heading>
+          <Stack gap={2} align="start">
+            <Wrap gap={4}>
+              <Skeletize loading={true}>
+                <Button variant="solid" colorScheme="blue">
+                  Solid
+                </Button>
+              </Skeletize>
+              <Skeletize loading={true}>
+                <Button variant="outline" colorScheme="green">
+                  Outline
+                </Button>
+              </Skeletize>
+              <Skeletize loading={true}>
+                <Button variant="ghost" colorScheme="red">
+                  Ghost
+                </Button>
+              </Skeletize>
+            </Wrap>
+            <Text fontSize="xs" color="gray.500">
+              Reference:
+            </Text>
+            <Wrap gap={4}>
+              <Button variant="solid" colorScheme="blue">
+                Solid
+              </Button>
+              <Button variant="outline" colorScheme="green">
+                Outline
+              </Button>
+              <Button variant="ghost" colorScheme="red">
+                Ghost
+              </Button>
+            </Wrap>
+          </Stack>
+        </Box>
+      </Stack>
+    </Box>
+  </ChakraWrapper>
+);
+
+export const AllComponentTypes: Story = () => (
+  <ChakraWrapper>
+    <Box>
+      <Heading size="md" mb={4}>
+        All Component Types Test
+      </Heading>
+      <Text mb={6} fontSize="sm" color="gray.600">
+        Test different component types to ensure proper skeleton generation.
+      </Text>
+
+      <Stack gap={8}>
+        <Box>
+          <Heading size="sm" mb={4} color="blue.600">
+            Button Components
+          </Heading>
+          <Wrap gap={4}>
+            <Skeletize loading={true}>
+              <Button size="xs">XS Button</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="sm">Small Button</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="md">Medium Button</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="lg">Large Button</Button>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Button size="xl">Extra Large</Button>
+            </Skeletize>
+          </Wrap>
+        </Box>
+
+        <Box>
+          <Heading size="sm" mb={4} color="green.600">
+            Text Components
+          </Heading>
+          <Stack gap={2} align="start">
+            <Skeletize loading={true}>
+              <Heading size="sm">Small Heading</Heading>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Heading size="lg">Large Heading</Heading>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Text fontSize="sm">Small text content</Text>
+            </Skeletize>
+            <Skeletize loading={true}>
+              <Text fontSize="lg">Large text content</Text>
+            </Skeletize>
+          </Stack>
+        </Box>
+
+        <Box>
+          <Heading size="sm" mb={4} color="purple.600">
+            Reference (No Loading)
+          </Heading>
+          <Wrap gap={4} mb={4}>
+            <Button size="xs">XS Button</Button>
+            <Button size="sm">Small Button</Button>
+            <Button size="md">Medium Button</Button>
+            <Button size="lg">Large Button</Button>
+            <Button size="xl">Extra Large</Button>
+          </Wrap>
+          <Stack gap={2} align="start">
+            <Heading size="sm">Small Heading - Real</Heading>
+            <Heading size="lg">Large Heading - Real</Heading>
+            <Text fontSize="sm">Small text content</Text>
+            <Text fontSize="lg">Large text content</Text>
+          </Stack>
+        </Box>
+      </Stack>
+    </Box>
+  </ChakraWrapper>
+);
+
+export const ComplexLayout: Story = () => (
+  <ChakraWrapper>
+    <Box>
+      <Heading size="md" mb={4}>
+        Complex Layout Test
+      </Heading>
+      <Text mb={6} fontSize="sm" color="gray.600">
+        Test complex nested layouts and mixed component types.
+      </Text>
+
+      <Skeletize loading={true}>
+        <Stack gap={6}>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Heading size="lg">Dashboard Header</Heading>
+            <Box display="flex" gap={3}>
+              <Button size="sm" variant="outline">
+                Settings
+              </Button>
+              <Button size="sm" colorScheme="blue">
+                Upgrade
+              </Button>
+            </Box>
+          </Box>
+
+          <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={4}>
+            <Box p={4} border="1px solid" borderColor="gray.200" borderRadius="md">
+              <Heading size="sm" mb={2}>
+                Total Users
+              </Heading>
+              <Text fontSize="2xl" fontWeight="bold">
+                12,345
+              </Text>
+              <Text fontSize="sm" color="green.500">
+                +12% from last month
+              </Text>
+            </Box>
+
+            <Box p={4} border="1px solid" borderColor="gray.200" borderRadius="md">
+              <Heading size="sm" mb={2}>
+                Revenue
+              </Heading>
+              <Text fontSize="2xl" fontWeight="bold">
+                $54,321
+              </Text>
+              <Text fontSize="sm" color="green.500">
+                +8% from last month
+              </Text>
+            </Box>
+
+            <Box p={4} border="1px solid" borderColor="gray.200" borderRadius="md">
+              <Heading size="sm" mb={2}>
+                Conversion
+              </Heading>
+              <Text fontSize="2xl" fontWeight="bold">
+                3.2%
+              </Text>
+              <Text fontSize="sm" color="red.500">
+                -2% from last month
+              </Text>
+            </Box>
+          </Box>
+
+          <Box display="flex" gap={6}>
+            <Box flex="2">
+              <Heading size="md" mb={3}>
+                Recent Activity
+              </Heading>
+              <Stack gap={3}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={3}
+                  p={3}
+                  bg="gray.50"
+                  borderRadius="md"
+                >
+                  <Box w="40px" h="40px" bg="blue.100" borderRadius="full" />
+                  <Box flex="1">
+                    <Text fontWeight="medium">John Doe signed up</Text>
+                    <Text fontSize="sm" color="gray.500">
+                      2 minutes ago
+                    </Text>
+                  </Box>
+                  <Button size="xs" variant="ghost">
+                    View
+                  </Button>
+                </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={3}
+                  p={3}
+                  bg="gray.50"
+                  borderRadius="md"
+                >
+                  <Box w="40px" h="40px" bg="green.100" borderRadius="full" />
+                  <Box flex="1">
+                    <Text fontWeight="medium">Payment received</Text>
+                    <Text fontSize="sm" color="gray.500">
+                      5 minutes ago
+                    </Text>
+                  </Box>
+                  <Button size="xs" variant="ghost">
+                    View
+                  </Button>
+                </Box>
+              </Stack>
+            </Box>
+
+            <Box flex="1">
+              <Heading size="md" mb={3}>
+                Quick Actions
+              </Heading>
+              <Stack gap={2}>
+                <Button size="sm" width="100%" variant="outline">
+                  Create User
+                </Button>
+                <Button size="sm" width="100%" variant="outline">
+                  Send Email
+                </Button>
+                <Button size="sm" width="100%" variant="outline">
+                  Generate Report
+                </Button>
+                <Button size="sm" width="100%" colorScheme="blue">
+                  View Analytics
+                </Button>
+              </Stack>
+            </Box>
+          </Box>
+        </Stack>
+      </Skeletize>
+    </Box>
+  </ChakraWrapper>
+);
+
+export const EdgeCases: Story = () => {
+  // Custom component to test edge cases
+  const CustomCard = ({
+    title,
+    children,
+    size = 'md',
+  }: {
+    title: string;
+    children: React.ReactNode;
+    size?: string;
+  }) => (
+    <Box
+      p={size === 'lg' ? 6 : 4}
+      border="2px solid"
+      borderColor="blue.200"
+      borderRadius="lg"
+      bg="blue.50"
+      minW={size === 'lg' ? '300px' : '200px'}
+    >
+      <Heading size={size === 'lg' ? 'md' : 'sm'} color="blue.800" mb={2}>
+        {title}
+      </Heading>
+      <Text color="blue.600">{children}</Text>
+    </Box>
+  );
+
+  return (
+    <ChakraWrapper>
+      <Box>
+        <Heading size="md" mb={4}>
+          Edge Cases Test
+        </Heading>
+        <Text mb={6} fontSize="sm" color="gray.600">
+          Test edge cases like custom components, unusual dimensions, and complex styling.
+        </Text>
+
+        <Stack gap={8}>
+          <Box>
+            <Heading size="sm" mb={3}>
+              Custom Components
+            </Heading>
+            <Wrap gap={4}>
+              <Skeletize loading={true}>
+                <CustomCard title="Small Card" size="sm">
+                  This is a small custom card component.
+                </CustomCard>
+              </Skeletize>
+
+              <Skeletize loading={true}>
+                <CustomCard title="Large Card" size="lg">
+                  This is a large custom card component with more content.
+                </CustomCard>
+              </Skeletize>
+            </Wrap>
+          </Box>
+
+          <Box>
+            <Heading size="sm" mb={3}>
+              Buttons with Custom Dimensions
+            </Heading>
+            <Wrap gap={4}>
+              <Skeletize loading={true}>
+                <Button width="200px" height="60px" size="lg">
+                  Wide Button
+                </Button>
+              </Skeletize>
+
+              <Skeletize loading={true}>
+                <Button width="80px" height="80px" borderRadius="full">
+                  ⭐
+                </Button>
+              </Skeletize>
+
+              <Skeletize loading={true}>
+                <Button size="xs" px={8} py={1} fontSize="xs" fontWeight="normal">
+                  Extended Padding
+                </Button>
+              </Skeletize>
+            </Wrap>
+          </Box>
+
+          <Box>
+            <Heading size="sm" mb={3}>
+              Text with Custom Styling
+            </Heading>
+            <Stack gap={3} align="start">
+              <Skeletize loading={true}>
+                <Text fontSize="3xl" fontWeight="black" color="purple.600" letterSpacing="wide">
+                  BOLD ANNOUNCEMENT
+                </Text>
+              </Skeletize>
+
+              <Skeletize loading={true}>
+                <Text
+                  fontSize="sm"
+                  fontStyle="italic"
+                  color="gray.500"
+                  maxW="300px"
+                  lineHeight="tall"
+                >
+                  This is a longer piece of text with custom styling. It has italic styling and
+                  specific line height.
+                </Text>
+              </Skeletize>
+            </Stack>
+          </Box>
+
+          <Box>
+            <Heading size="sm" mb={3}>
+              Reference (No Loading)
+            </Heading>
+            <Text fontSize="xs" color="gray.500" mb={3}>
+              These are the actual components for comparison:
+            </Text>
+            <Stack gap={4}>
+              <Wrap gap={4}>
+                <CustomCard title="Small Card" size="sm">
+                  This is a small custom card component.
+                </CustomCard>
+
+                <CustomCard title="Large Card" size="lg">
+                  This is a large custom card component with more content.
+                </CustomCard>
+              </Wrap>
+
+              <Wrap gap={4}>
+                <Button width="200px" height="60px" size="lg">
+                  Wide Button
+                </Button>
+
+                <Button width="80px" height="80px" borderRadius="full">
+                  ⭐
+                </Button>
+
+                <Button size="xs" px={8} py={1} fontSize="xs" fontWeight="normal">
+                  Extended Padding
+                </Button>
+              </Wrap>
+
+              <Stack gap={3} align="start">
+                <Text fontSize="3xl" fontWeight="black" color="purple.600" letterSpacing="wide">
+                  BOLD ANNOUNCEMENT
+                </Text>
+
+                <Text
+                  fontSize="sm"
+                  fontStyle="italic"
+                  color="gray.500"
+                  maxW="300px"
+                  lineHeight="tall"
+                >
+                  This is a longer piece of text with custom styling. It has italic styling and
+                  specific line height.
+                </Text>
+              </Stack>
+            </Stack>
+          </Box>
+        </Stack>
+      </Box>
+    </ChakraWrapper>
+  );
+};

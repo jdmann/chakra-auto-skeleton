@@ -1,8 +1,8 @@
 // src/components/Skeletize.tsx
 import { Box, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
-import { Children, cloneElement, isValidElement } from "react";
-import { Fragment, jsx } from "react/jsx-runtime";
-var getSkeletonProps = (props) => {
+import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var getSkeletonProps = (props, excludeSize = true, excludeDimensions = false) => {
   const allowed = [
     "height",
     "width",
@@ -32,7 +32,17 @@ var getSkeletonProps = (props) => {
       skeletonProps[key] = props[key];
     }
   }
-  const { size, colorScheme, variant, onClick, ...cleanProps } = skeletonProps;
+  const propsToExclude = ["colorScheme", "variant", "onClick"];
+  if (excludeSize) {
+    propsToExclude.push("size");
+  }
+  if (excludeDimensions) {
+    propsToExclude.push("height", "width", "minHeight", "minWidth", "maxHeight", "maxWidth");
+  }
+  const cleanProps = { ...skeletonProps };
+  propsToExclude.forEach((prop) => {
+    delete cleanProps[prop];
+  });
   return cleanProps;
 };
 var getComponentName = (child) => {
@@ -104,42 +114,59 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
   const renderSkeletonForChild = (child) => {
     var _a, _b;
     const name = getComponentName(child);
-    const props = getSkeletonProps(child.props);
-    if (typeof child.props.children === "string") {
-    }
     if (mode === "manual") {
       if (child.props["data-skeleton"]) {
         if (isButtonLikeComponent(child, name)) {
-          const buttonSize = child.props.size || "md";
-          const buttonDimensions = {
-            xs: { height: "24px", width: "80px" },
-            sm: { height: "32px", width: "96px" },
-            md: { height: "40px", width: "120px" },
-            lg: { height: "48px", width: "140px" },
-            xl: { height: "56px", width: "160px" }
+          const MeasuredSkeletonButton = () => {
+            const [dimensions, setDimensions] = useState(null);
+            const measureRef = useRef(null);
+            useEffect(() => {
+              if (measureRef.current) {
+                const rect = measureRef.current.getBoundingClientRect();
+                setDimensions({ width: rect.width, height: rect.height });
+              }
+            }, []);
+            const buttonProps = { ...child.props };
+            delete buttonProps.onClick;
+            delete buttonProps.onMouseEnter;
+            delete buttonProps.onMouseLeave;
+            delete buttonProps.onFocus;
+            delete buttonProps.onBlur;
+            delete buttonProps.type;
+            delete buttonProps["data-skeleton"];
+            return /* @__PURE__ */ jsxs(Box, { position: "relative", display: "inline-block", children: [
+              cloneElement(child, {
+                ...buttonProps,
+                ref: measureRef,
+                position: "absolute",
+                opacity: 0,
+                pointerEvents: "none",
+                zIndex: -1
+              }),
+              /* @__PURE__ */ jsx(
+                Skeleton,
+                {
+                  width: dimensions ? `${dimensions.width}px` : "auto",
+                  height: dimensions ? `${dimensions.height}px` : "auto",
+                  minWidth: dimensions ? `${dimensions.width}px` : "120px",
+                  minHeight: dimensions ? `${dimensions.height}px` : "40px",
+                  borderRadius: "md",
+                  display: "inline-block"
+                }
+              )
+            ] });
           };
-          const dimensions = buttonDimensions[buttonSize] || buttonDimensions.md;
-          const height = child.props.height || dimensions.height;
-          const width = child.props.width || dimensions.width;
-          return /* @__PURE__ */ jsx(
-            Box,
-            {
-              minH: height,
-              minHeight: height,
-              h: height,
-              flexShrink: 0,
-              flex: "0 0 auto",
-              display: "block",
-              children: /* @__PURE__ */ jsx(Skeleton, { ...props, height, width })
-            }
-          );
+          return /* @__PURE__ */ jsx(MeasuredSkeletonButton, {});
         }
         if (isTextLikeComponent(child, name)) {
-          return /* @__PURE__ */ jsx(SkeletonText, { noOfLines: 1, ...props });
+          const props2 = getSkeletonProps(child.props, false);
+          return /* @__PURE__ */ jsx(SkeletonText, { noOfLines: 1, ...props2 });
         }
         if (isAvatarLikeComponent(child, name)) {
-          return /* @__PURE__ */ jsx(SkeletonCircle, { size: child.props.size || child.props.boxSize || "40px", ...props });
+          const props2 = getSkeletonProps(child.props, true);
+          return /* @__PURE__ */ jsx(SkeletonCircle, { size: child.props.size || child.props.boxSize || "40px", ...props2 });
         }
+        const props = getSkeletonProps(child.props, true);
         return /* @__PURE__ */ jsx(Skeleton, { ...props });
       }
       if (isLayoutLikeComponent(child, name) && ((_a = child.props) == null ? void 0 : _a.children)) {
@@ -150,57 +177,65 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       return child;
     }
     if (isButtonLikeComponent(child, name)) {
-      const buttonSize = child.props.size || "md";
-      const buttonDimensions = {
-        xs: { height: "24px", width: "80px" },
-        sm: { height: "32px", width: "96px" },
-        md: { height: "40px", width: "120px" },
-        lg: { height: "48px", width: "140px" },
-        xl: { height: "56px", width: "160px" }
+      const MeasuredSkeletonButton = () => {
+        const [dimensions, setDimensions] = React.useState(null);
+        const measureRef = React.useRef(null);
+        React.useEffect(() => {
+          if (measureRef.current) {
+            const rect = measureRef.current.getBoundingClientRect();
+            setDimensions({ width: rect.width, height: rect.height });
+          }
+        }, []);
+        const buttonProps = { ...child.props };
+        delete buttonProps.onClick;
+        delete buttonProps.onMouseEnter;
+        delete buttonProps.onMouseLeave;
+        delete buttonProps.onFocus;
+        delete buttonProps.onBlur;
+        delete buttonProps.type;
+        return /* @__PURE__ */ jsxs(Box, { position: "relative", display: "inline-block", children: [
+          cloneElement(child, {
+            ...buttonProps,
+            ref: measureRef,
+            position: "absolute",
+            opacity: 0,
+            pointerEvents: "none",
+            zIndex: -1
+          }),
+          /* @__PURE__ */ jsx(
+            Skeleton,
+            {
+              width: dimensions ? `${dimensions.width}px` : "auto",
+              height: dimensions ? `${dimensions.height}px` : "auto",
+              minWidth: dimensions ? `${dimensions.width}px` : "120px",
+              minHeight: dimensions ? `${dimensions.height}px` : "40px",
+              borderRadius: "md",
+              display: "inline-block"
+            }
+          )
+        ] });
       };
-      const dimensions = buttonDimensions[buttonSize] || buttonDimensions.md;
-      const height = child.props.height || dimensions.height;
-      const width = child.props.width || dimensions.width;
-      console.log("Button skeleton debug:", {
-        buttonSize,
-        dimensions,
-        height,
-        width,
-        childProps: child.props
-      });
-      return /* @__PURE__ */ jsx(
-        Box,
-        {
-          minH: height,
-          minHeight: height,
-          h: height,
-          flexShrink: 0,
-          flex: "0 0 auto",
-          display: "block",
-          style: {
-            minHeight: height,
-            height,
-            flexShrink: 0,
-            flex: "0 0 auto"
-          },
-          children: /* @__PURE__ */ jsx(Skeleton, { ...props, height, width })
-        }
-      );
+      return /* @__PURE__ */ jsx(MeasuredSkeletonButton, {});
     }
     if (isTextLikeComponent(child, name)) {
+      const props = getSkeletonProps(child.props, false);
       return /* @__PURE__ */ jsx(SkeletonText, { noOfLines: 1, ...props });
     }
     if (isAvatarLikeComponent(child, name)) {
+      const props = getSkeletonProps(child.props, true);
       return /* @__PURE__ */ jsx(SkeletonCircle, { size: child.props.size || child.props.boxSize || "40px", ...props });
     }
     if (name === "Image") {
+      const props = getSkeletonProps(child.props, true);
       return /* @__PURE__ */ jsx(Skeleton, { ...props, height: child.props.height || "200px" });
     }
     if (!name || name === "") {
       if (typeof child.props.children === "string" && (child.props.fontSize || child.props.fontWeight || child.props.color)) {
+        const props = getSkeletonProps(child.props, false);
         return /* @__PURE__ */ jsx(SkeletonText, { noOfLines: 1, ...props });
       }
       if (child.props.onClick || child.props.colorScheme || child.props.variant) {
+        const props = getSkeletonProps(child.props, true);
         return /* @__PURE__ */ jsx(Box, { minH: "40px", minHeight: "40px", h: "40px", flexShrink: 0, flex: "0 0 auto", display: "block", children: /* @__PURE__ */ jsx(Skeleton, { ...props, height: "40px", width: "120px" }) });
       }
     }
@@ -209,8 +244,9 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         children: /* @__PURE__ */ jsx(Skeletize, { loading: true, mode: "auto", children: child.props.children })
       });
     }
-    if (props.height || props.width || child.props["data-skeleton"]) {
-      return /* @__PURE__ */ jsx(Skeleton, { ...props });
+    const defaultProps = getSkeletonProps(child.props, true);
+    if (defaultProps.height || defaultProps.width || child.props["data-skeleton"]) {
+      return /* @__PURE__ */ jsx(Skeleton, { ...defaultProps });
     }
     if (typeof child.props.children === "string") {
       const content = child.props.children.toLowerCase();
@@ -226,6 +262,7 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
         "btn"
       ];
       if (buttonKeywords.some((keyword) => content.includes(keyword))) {
+        const props = getSkeletonProps(child.props, true);
         return /* @__PURE__ */ jsx(Box, { minH: "40px", minHeight: "40px", h: "40px", flexShrink: 0, flex: "0 0 auto", display: "block", children: /* @__PURE__ */ jsx(Skeleton, { ...props, height: "40px", width: "120px" }) });
       }
     }
