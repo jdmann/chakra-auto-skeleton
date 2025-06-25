@@ -1,0 +1,31 @@
+.skeletize-loading .chakra-button,
+.skeletize-loading .chakra-input,
+.skeletize-loading .chakra-heading,
+.skeletize-loading .chakra-badge,
+.skeletize-loading .chakra-text,
+.skeletize-loading p,
+.skeletize-loading h1,
+.skeletize-loading h2,
+.skeletize-loading h3,
+.skeletize-loading h4,
+.skeletize-loading h5,
+.skeletize-loading h6 {
+  color: transparent !important;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%) !important;
+  border-color: transparent !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  animation: skeletize-pulse 1.2s ease-in-out infinite !important;
+}
+
+@keyframes skeletize-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -1,257 +1,218 @@
 import {
+  Badge,
   Box,
   Button,
   ChakraProvider,
   defaultSystem,
   Heading,
   HStack,
-  Stack,
+  Input,
+  SimpleGrid,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import type { Story } from '@ladle/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { Skeletize } from './index';
 
-// Wrapper component for Chakra UI provider
-const ChakraWrapper = ({ children }: { children: React.ReactNode }) => (
+export default {
+  title: 'Skeletize/Showcase',
+};
+
+const ChakraWrap: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <ChakraProvider value={defaultSystem}>
-    <Box p={6}>{children}</Box>
+    <Box p={8} bg="gray.50" minH="100vh">
+      {children}
+    </Box>
   </ChakraProvider>
 );
 
-export const BasicUsage: Story = () => (
-  <ChakraWrapper>
-    <Stack gap={6}>
-      <Box>
-        <Heading size="lg" mb={4}>
-          Basic Skeletize Usage
-        </Heading>
-        <Text color="gray.600" mb={6}>
-          Toggle loading state to see components transform into skeletons.
-        </Text>
-      </Box>
+export const Buttons = () => {
+  const [loading, setLoading] = useState(true);
+  return (
+    <ChakraWrap>
+      <Heading size="md" mb={4}>
+        Button Variants & Sizes
+      </Heading>
+      <Button mb={4} onClick={() => setLoading((l) => !l)}>
+        Toggle Loading
+      </Button>
+      <Skeletize loading={loading}>
+        <VStack align="start" gap={6}>
+          <HStack gap={4}>
+            <Button colorScheme="blue" size="sm">
+              Solid sm
+            </Button>
+            <Button colorScheme="blue" size="md">
+              Solid md
+            </Button>
+            <Button colorScheme="blue" size="lg">
+              Solid lg
+            </Button>
+          </HStack>
+          <HStack gap={4}>
+            <Button variant="outline" colorScheme="green" size="sm">
+              Outline sm
+            </Button>
+            <Button variant="outline" colorScheme="green" size="md">
+              Outline md
+            </Button>
+            <Button variant="outline" colorScheme="green" size="lg">
+              Outline lg
+            </Button>
+          </HStack>
+          <HStack gap={4}>
+            <Button variant="ghost" colorScheme="purple" size="sm">
+              Ghost sm
+            </Button>
+            <Button variant="ghost" colorScheme="purple" size="md">
+              Ghost md
+            </Button>
+            <Button variant="ghost" colorScheme="purple" size="lg">
+              Ghost lg
+            </Button>
+          </HStack>
+        </VStack>
+      </Skeletize>
+    </ChakraWrap>
+  );
+};
 
-      <Stack gap={6}>
-        <Box border="1px solid" borderColor="gray.200" p={4} borderRadius="md">
-          <Text fontSize="md" fontWeight="semibold" mb={3}>
-            Loading State (Skeletons)
-          </Text>
-          <Skeletize loading={true}>
-            <VStack gap={4} align="start">
-              <Heading size="lg">Dashboard Overview</Heading>
-              <Text fontSize="lg">Welcome back! Here's what's happening today.</Text>
-              <HStack gap={4}>
-                <Button colorScheme="blue" size="lg">
-                  Create New
-                </Button>
-                <Button variant="outline" size="lg">
-                  View Reports
-                </Button>
-              </HStack>
-              <Box>
-                <Text fontSize="sm" fontWeight="medium" mb={2}>
-                  Quick Stats
-                </Text>
-                <HStack gap={6}>
-                  <Box>
-                    <Text fontSize="2xl" fontWeight="bold">
-                      1,234
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Total Users
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text fontSize="2xl" fontWeight="bold">
-                      $45,678
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Revenue
-                    </Text>
-                  </Box>
-                </HStack>
-              </Box>
-            </VStack>
-          </Skeletize>
-        </Box>
+export const Inputs = () => {
+  const [loading, setLoading] = useState(true);
+  return (
+    <ChakraWrap>
+      <Heading size="md" mb={4}>
+        Text Inputs (V3 Only)
+      </Heading>
+      <Button mb={4} onClick={() => setLoading((l) => !l)}>
+        Toggle Loading
+      </Button>
+      <Skeletize loading={loading}>
+        <VStack align="start" gap={6}>
+          <Box>
+            <Text mb={1}>Email address</Text>
+            <Input placeholder="Enter email" />
+          </Box>
+          <Box>
+            <Text mb={1}>Password</Text>
+            <Input type="password" placeholder="Password" />
+          </Box>
+        </VStack>
+      </Skeletize>
+    </ChakraWrap>
+  );
+};
 
-        <Box border="1px solid" borderColor="green.200" p={4} borderRadius="md">
-          <Text fontSize="md" fontWeight="semibold" mb={3}>
-            Loaded State (Real Content)
-          </Text>
-          <Skeletize loading={false}>
-            <VStack gap={4} align="start">
-              <Heading size="lg">Dashboard Overview</Heading>
-              <Text fontSize="lg">Welcome back! Here's what's happening today.</Text>
-              <HStack gap={4}>
-                <Button colorScheme="blue" size="lg">
-                  Create New
-                </Button>
-                <Button variant="outline" size="lg">
-                  View Reports
-                </Button>
-              </HStack>
-              <Box>
-                <Text fontSize="sm" fontWeight="medium" mb={2}>
-                  Quick Stats
-                </Text>
-                <HStack gap={6}>
-                  <Box>
-                    <Text fontSize="2xl" fontWeight="bold">
-                      1,234
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Total Users
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text fontSize="2xl" fontWeight="bold">
-                      $45,678
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      Revenue
-                    </Text>
-                  </Box>
-                </HStack>
-              </Box>
-            </VStack>
-          </Skeletize>
-        </Box>
-      </Stack>
-    </Stack>
-  </ChakraWrapper>
-);
-
-export const ComponentTypes: Story = () => (
-  <ChakraWrapper>
-    <Stack gap={6}>
-      <Box>
-        <Heading size="lg" mb={4}>
-          Different Component Types
-        </Heading>
-        <Text color="gray.600" mb={6}>
-          How Skeletize handles different Chakra UI components.
-        </Text>
-      </Box>
-
-      <Stack gap={4}>
-        <Box border="1px solid" borderColor="gray.200" p={4} borderRadius="md">
-          <Text fontSize="md" fontWeight="semibold" mb={3}>
-            Text Components
-          </Text>
-          <Skeletize loading={true}>
-            <VStack gap={2} align="start">
-              <Heading size="xl">Large Heading</Heading>
-              <Heading size="md">Medium Heading</Heading>
-              <Text fontSize="lg">Large text content</Text>
-              <Text fontSize="md">Regular text content</Text>
-              <Text fontSize="sm" color="gray.600">
-                Small muted text
-              </Text>
-            </VStack>
-          </Skeletize>
-        </Box>
-
-        <Box border="1px solid" borderColor="gray.200" p={4} borderRadius="md">
-          <Text fontSize="md" fontWeight="semibold" mb={3}>
-            Buttons
-          </Text>
-          <Skeletize loading={true}>
-            <HStack gap={4} wrap="wrap">
-              <Button size="xs" colorScheme="blue">
-                Extra Small
-              </Button>
-              <Button size="sm" colorScheme="green">
-                Small Button
-              </Button>
-              <Button size="md" colorScheme="purple">
-                Medium Button
-              </Button>
-              <Button size="lg" colorScheme="orange">
-                Large Button
-              </Button>
-              <Button size="xl" colorScheme="red">
-                Extra Large
-              </Button>
-            </HStack>
-          </Skeletize>
-        </Box>
-
-        <Box border="1px solid" borderColor="gray.200" p={4} borderRadius="md">
-          <Text fontSize="md" fontWeight="semibold" mb={3}>
-            Mixed Components
-          </Text>
-          <Skeletize loading={true}>
-            <HStack gap={6} align="start">
-              <VStack gap={3} align="start">
-                <Box borderRadius="full" bg="gray.300" w="64px" h="64px" data-skeleton />
-                <Box>
-                  <Heading size="md">John Doe</Heading>
-                  <Text color="gray.600">Software Engineer</Text>
-                  <Text fontSize="sm">San Francisco, CA</Text>
-                </Box>
-              </VStack>
-              <VStack gap={2} align="stretch" flex="1">
-                <Button colorScheme="blue" size="sm">
-                  Send Message
-                </Button>
-                <Button variant="outline" size="sm">
-                  View Profile
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Add to Favorites
-                </Button>
+export const ComplexLayout = () => {
+  const [loading, setLoading] = useState(true);
+  return (
+    <ChakraWrap>
+      <Heading size="md" mb={4}>
+        Complex Layout Example
+      </Heading>
+      <Button mb={4} onClick={() => setLoading((l) => !l)}>
+        Toggle Loading
+      </Button>
+      <Skeletize loading={loading}>
+        <SimpleGrid columns={[1, 2]} gap={10}>
+          <Box p={6} bg="white" borderRadius="lg" boxShadow="md">
+            <HStack mb={4}>
+              <Box boxSize="60px" bg="gray.200" borderRadius="full" data-skeleton />
+              <VStack align="start">
+                <Heading size="md">Jane Doe</Heading>
+                <Text color="gray.500">Product Manager</Text>
+                <Badge colorScheme="green">Active</Badge>
               </VStack>
             </HStack>
-          </Skeletize>
-        </Box>
-      </Stack>
-    </Stack>
-  </ChakraWrapper>
-);
-
-export const ManualMode: Story = () => (
-  <ChakraWrapper>
-    <Stack gap={6}>
-      <Box>
-        <Heading size="lg" mb={4}>
-          Manual Mode
-        </Heading>
-        <Text color="gray.600" mb={6}>
-          Use data-skeleton attribute to manually control which components become skeletons.
-        </Text>
-      </Box>
-
-      <Box border="1px solid" borderColor="blue.200" p={4} borderRadius="md">
-        <Text fontSize="md" fontWeight="semibold" mb={3}>
-          Selective Skeletonization
-        </Text>
-        <Skeletize loading={true} mode="manual">
-          <VStack gap={4} align="start">
-            <Heading size="lg" data-skeleton>
-              This heading will be skeletonized
+            <Text mb={2}>Jane is responsible for product vision and roadmap.</Text>
+            <Button colorScheme="blue" size="sm">
+              Message
+            </Button>
+          </Box>
+          <Box p={6} bg="white" borderRadius="lg" boxShadow="md">
+            <Heading size="sm" mb={2}>
+              E-commerce Card
             </Heading>
-            <Text fontSize="lg">This text will remain visible</Text>
-            <HStack gap={4}>
-              <Button colorScheme="blue" size="lg" data-skeleton>
-                Skeleton Button
-              </Button>
-              <Button variant="outline" size="lg">
-                Normal Button
-              </Button>
-            </HStack>
-            <Box>
-              <Text fontSize="sm" fontWeight="medium" mb={2} data-skeleton>
-                This label will be skeletonized
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold">
-                But this value stays visible: $12,345
-              </Text>
+            <Box boxSize="100px" bg="gray.200" borderRadius="md" mb={3} data-skeleton />
+            <Text fontWeight="bold">Awesome Sneakers</Text>
+            <Text color="gray.500">$129.99</Text>
+            <Button colorScheme="orange" size="sm" mt={2}>
+              Add to Cart
+            </Button>
+          </Box>
+        </SimpleGrid>
+      </Skeletize>
+    </ChakraWrap>
+  );
+};
+
+export const SkeletonVariants = () => {
+  const [loading, setLoading] = useState(true);
+  return (
+    <ChakraWrap>
+      <Heading size="md" mb={4}>
+        Skeleton Variants
+      </Heading>
+      <Button mb={4} onClick={() => setLoading((l) => !l)}>
+        Toggle Loading
+      </Button>
+      <VStack align="start" gap={8}>
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Pulse (default)
+          </Text>
+          <Skeletize loading={loading} variant="pulse">
+            <Box p={3} w="300px" data-skeleton>
+              Pulse animation (default)
             </Box>
-          </VStack>
-        </Skeletize>
-      </Box>
-    </Stack>
-  </ChakraWrapper>
-);
+          </Skeletize>
+        </Box>
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Fade
+          </Text>
+          <Skeletize loading={loading} variant="fade">
+            <Box p={3} w="300px" data-skeleton>
+              Fade animation
+            </Box>
+          </Skeletize>
+        </Box>
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Static
+          </Text>
+          <Skeletize loading={loading} variant="static">
+            <Box p={3} w="300px" data-skeleton>
+              Static skeleton (no animation)
+            </Box>
+          </Skeletize>
+        </Box>
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            None
+          </Text>
+          <Skeletize loading={loading} variant="none">
+            <Box p={3} w="300px" data-skeleton>
+              No skeleton effect
+            </Box>
+          </Skeletize>
+        </Box>
+        <Box>
+          <Text mb={2} fontWeight="bold">
+            Custom Colors
+          </Text>
+          <Skeletize
+            loading={loading}
+            variant="pulse"
+            skeletonColor="#fbbf24"
+            skeletonEndColor="#fde68a"
+          >
+            <Box p={3} w="300px" data-skeleton>
+              Custom color skeleton
+            </Box>
+          </Skeletize>
+        </Box>
+      </VStack>
+    </ChakraWrap>
+  );
+};
