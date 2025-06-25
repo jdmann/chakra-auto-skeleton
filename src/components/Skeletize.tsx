@@ -93,7 +93,12 @@ const getComponentName = (child: ReactElement): string => {
   if (componentType && componentType.render) {
     const renderFn = componentType.render;
     if (renderFn && renderFn.displayName) return renderFn.displayName;
-    if (renderFn && renderFn.name) return renderFn.name;
+    if (renderFn && renderFn.name) {
+      // Special handling for Chakra UI v3 component names
+      const renderName = renderFn.name;
+      if (renderName === 'Button2') return 'Button';
+      if (renderName && renderName !== 'anonymous') return renderName;
+    }
   }
 
   // Check for $$typeof and other React internals (forwardRef, memo, etc.)
@@ -101,6 +106,43 @@ const getComponentName = (child: ReactElement): string => {
     const innerType = componentType.type;
     if (innerType && innerType.displayName) return innerType.displayName;
     if (innerType && innerType.name) return innerType.name;
+  }
+
+  // For Chakra UI v3, try to infer component type from props and context
+  if (componentType && componentType.$$typeof && componentType.render) {
+    // This is a forwardRef component, try to infer from context
+    const props = child.props;
+
+    // Check if this looks like text content
+    if (typeof props.children === 'string') {
+      // If it has heading-specific size values, it's likely a Heading
+      if (props.size && ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].includes(props.size)) {
+        // Check if it's more likely a button or heading based on other props
+        if (props.onClick || props.colorScheme || props.variant) {
+          return 'Button';
+        }
+        return 'Heading';
+      }
+
+      // If it has text-specific styling props, it's likely Text
+      if (
+        props.fontSize ||
+        props.fontWeight ||
+        props.color ||
+        props.textAlign ||
+        props.lineHeight
+      ) {
+        return 'Text';
+      }
+
+      // Default text-like component based on content
+      return 'Text';
+    }
+
+    // If it has button-like props, it's probably a Button
+    if (props.onClick || props.colorScheme || props.variant || props.type === 'button') {
+      return 'Button';
+    }
   }
 
   // Fallback to string representation and try to extract component name
@@ -139,16 +181,33 @@ const isLayoutComponent = (name: string) =>
   ['Box', 'Stack', 'Flex', 'Grid', 'Container', 'Wrap', 'Center'].includes(name);
 
 const isTextLikeComponent = (child: ReactElement, name: string): boolean => {
-  // Check component name (including variations)
-  if (['Text', 'Heading', 'text', 'heading', 'ChakraText', 'ChakraHeading'].includes(name))
+  // Check component name (including variations) - be more flexible
+  const namePatterns = [
+    'Text',
+    'Heading',
+    'text',
+    'heading',
+    'ChakraText',
+    'ChakraHeading',
+    // Chakra UI v3 might use different naming
+    'TextRoot',
+    'HeadingRoot',
+    'Text.Root',
+    'Heading.Root',
+  ];
+
+  if (namePatterns.includes(name)) {
     return true;
+  }
+
+  // MORE AGGRESSIVE DETECTION: If we can't determine component name,
+  // use props and content to detect text-like components
+
+  const hasStringChildren = typeof child.props.children === 'string';
 
   // Check for text-like props
   const textProps = ['fontSize', 'fontWeight', 'color', 'textAlign', 'lineHeight', 'fontFamily'];
   const hasTextProps = textProps.some((prop) => child.props[prop] !== undefined);
-
-  // Check if it contains only text content (string children)
-  const hasOnlyTextContent = typeof child.props.children === 'string';
 
   // Check for common text styling props
   const hasTextStyling = !!(
@@ -161,7 +220,7 @@ const isTextLikeComponent = (child: ReactElement, name: string): boolean => {
     child.props.size // for Heading size prop
   );
 
-  // If it has text content and any text/spacing props, treat as text
+  // Check for text content and any text/spacing props
   const hasTextOrSpacingProps = !!(
     hasTextStyling ||
     child.props.mb ||
@@ -173,11 +232,40 @@ const isTextLikeComponent = (child: ReactElement, name: string): boolean => {
     child.props.marginTop
   );
 
+  // Additional check: look at the component structure for text-like patterns
+  const typeString = (child.type as any)?.toString() || '';
+  const hasTextInTypeString =
+    typeString.toLowerCase().includes('text') || typeString.toLowerCase().includes('heading');
+
+  // AGGRESSIVE CHECK: If it has string children and NO button-like props,
+  // and has ANY styling prop at all, treat it as text
+  const hasButtonLikeProps = !!(
+    child.props.onClick ||
+    child.props.onSubmit ||
+    child.props.type === 'button' ||
+    child.props.type === 'submit' ||
+    child.props.colorScheme ||
+    child.props.variant
+  );
+
+  // If it has string children and no button-like behavior, and has some styling,
+  // it's probably a text component
+  if (hasStringChildren && !hasButtonLikeProps && (hasTextStyling || hasTextOrSpacingProps)) {
+    return true;
+  }
+
+  // Even more aggressive: if it has string children and NO interactive props,
+  // and we can't identify what it is, assume it's text
+  if (hasStringChildren && !hasButtonLikeProps && name === '') {
+    return true;
+  }
+
   // Return true if:
   // 1. Name matches text components, OR
   // 2. Has explicit text props, OR
-  // 3. Has text content AND has any text/spacing styling
-  return hasTextProps || (hasOnlyTextContent && hasTextOrSpacingProps);
+  // 3. Has text content AND has any text/spacing styling, OR
+  // 4. Type string contains text/heading
+  return hasTextProps || (hasStringChildren && hasTextOrSpacingProps) || hasTextInTypeString;
 };
 
 const isButtonLikeComponent = (child: ReactElement, name: string): boolean => {
@@ -432,6 +520,22 @@ export const Skeletize: React.FC<SkeletizeProps> = ({ loading, mode = 'auto', ch
 
     // Last resort: check if this looks like a button based on children content
     if (typeof child.props.children === 'string') {
+      // AGGRESSIVE FALLBACK: If it has string children but no button-like props,
+      // and we couldn't identify what it is, assume it's text
+      const hasButtonLikeProps = !!(
+        child.props.onClick ||
+        child.props.colorScheme ||
+        child.props.variant ||
+        child.props.type === 'button'
+      );
+
+      if (!hasButtonLikeProps) {
+        // Most likely a text component that we failed to detect
+        const props = getSkeletonProps(child.props, false);
+        return <SkeletonText noOfLines={1} {...props} />;
+      }
+
+      // Check if this looks like a button based on children content
       const content = child.props.children.toLowerCase();
       const buttonKeywords = [
         'click',

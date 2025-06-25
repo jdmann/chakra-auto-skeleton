@@ -1,6 +1,14 @@
 // src/components/Skeletize.tsx
 import { Box, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
-import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import React, {
+  Children,
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var getSkeletonProps = (props, excludeSize = true, excludeDimensions = false) => {
   const allowed = [
@@ -59,8 +67,13 @@ var getComponentName = (child) => {
     const renderFn = componentType.render;
     if (renderFn && renderFn.displayName)
       return renderFn.displayName;
-    if (renderFn && renderFn.name)
-      return renderFn.name;
+    if (renderFn && renderFn.name) {
+      const renderName = renderFn.name;
+      if (renderName === "Button2")
+        return "Button";
+      if (renderName && renderName !== "anonymous")
+        return renderName;
+    }
   }
   if (componentType && componentType.type) {
     const innerType = componentType.type;
@@ -68,6 +81,24 @@ var getComponentName = (child) => {
       return innerType.displayName;
     if (innerType && innerType.name)
       return innerType.name;
+  }
+  if (componentType && componentType.$$typeof && componentType.render) {
+    const props = child.props;
+    if (typeof props.children === "string") {
+      if (props.size && ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"].includes(props.size)) {
+        if (props.onClick || props.colorScheme || props.variant) {
+          return "Button";
+        }
+        return "Heading";
+      }
+      if (props.fontSize || props.fontWeight || props.color || props.textAlign || props.lineHeight) {
+        return "Text";
+      }
+      return "Text";
+    }
+    if (props.onClick || props.colorScheme || props.variant || props.type === "button") {
+      return "Button";
+    }
   }
   const typeStr = (componentType == null ? void 0 : componentType.toString()) || "";
   const match = typeStr.match(/function\s+([A-Za-z][A-Za-z0-9]*)/);
@@ -85,14 +116,38 @@ var isAvatarLikeComponent = (child, name) => {
 };
 var isLayoutComponent = (name) => ["Box", "Stack", "Flex", "Grid", "Container", "Wrap", "Center"].includes(name);
 var isTextLikeComponent = (child, name) => {
-  if (["Text", "Heading", "text", "heading", "ChakraText", "ChakraHeading"].includes(name))
+  var _a;
+  const namePatterns = [
+    "Text",
+    "Heading",
+    "text",
+    "heading",
+    "ChakraText",
+    "ChakraHeading",
+    // Chakra UI v3 might use different naming
+    "TextRoot",
+    "HeadingRoot",
+    "Text.Root",
+    "Heading.Root"
+  ];
+  if (namePatterns.includes(name)) {
     return true;
+  }
+  const hasStringChildren = typeof child.props.children === "string";
   const textProps = ["fontSize", "fontWeight", "color", "textAlign", "lineHeight", "fontFamily"];
   const hasTextProps = textProps.some((prop) => child.props[prop] !== void 0);
-  const hasOnlyTextContent = typeof child.props.children === "string";
   const hasTextStyling = !!(child.props.fontSize || child.props.fontWeight || child.props.color || child.props.textAlign || child.props.lineHeight || child.props.fontFamily || child.props.size);
   const hasTextOrSpacingProps = !!(hasTextStyling || child.props.mb || child.props.mt || child.props.mx || child.props.my || child.props.margin || child.props.marginBottom || child.props.marginTop);
-  return hasTextProps || hasOnlyTextContent && hasTextOrSpacingProps;
+  const typeString = ((_a = child.type) == null ? void 0 : _a.toString()) || "";
+  const hasTextInTypeString = typeString.toLowerCase().includes("text") || typeString.toLowerCase().includes("heading");
+  const hasButtonLikeProps = !!(child.props.onClick || child.props.onSubmit || child.props.type === "button" || child.props.type === "submit" || child.props.colorScheme || child.props.variant);
+  if (hasStringChildren && !hasButtonLikeProps && (hasTextStyling || hasTextOrSpacingProps)) {
+    return true;
+  }
+  if (hasStringChildren && !hasButtonLikeProps && name === "") {
+    return true;
+  }
+  return hasTextProps || hasStringChildren && hasTextOrSpacingProps || hasTextInTypeString;
 };
 var isButtonLikeComponent = (child, name) => {
   if (name === "Button")
@@ -118,9 +173,17 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       if (child.props["data-skeleton"]) {
         if (isButtonLikeComponent(child, name)) {
           const MeasuredSkeletonButton = () => {
-            const [dimensions, setDimensions] = useState(null);
+            const [dimensions, setDimensions] = useState(
+              null
+            );
             const measureRef = useRef(null);
             useEffect(() => {
+              if (measureRef.current) {
+                const rect = measureRef.current.getBoundingClientRect();
+                setDimensions({ width: rect.width, height: rect.height });
+              }
+            }, []);
+            useLayoutEffect(() => {
               if (measureRef.current) {
                 const rect = measureRef.current.getBoundingClientRect();
                 setDimensions({ width: rect.width, height: rect.height });
@@ -178,9 +241,17 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
     }
     if (isButtonLikeComponent(child, name)) {
       const MeasuredSkeletonButton = () => {
-        const [dimensions, setDimensions] = React.useState(null);
-        const measureRef = React.useRef(null);
-        React.useEffect(() => {
+        const [dimensions, setDimensions] = useState(
+          null
+        );
+        const measureRef = useRef(null);
+        useEffect(() => {
+          if (measureRef.current) {
+            const rect = measureRef.current.getBoundingClientRect();
+            setDimensions({ width: rect.width, height: rect.height });
+          }
+        }, []);
+        React.useLayoutEffect(() => {
           if (measureRef.current) {
             const rect = measureRef.current.getBoundingClientRect();
             setDimensions({ width: rect.width, height: rect.height });
@@ -249,6 +320,11 @@ var Skeletize = ({ loading, mode = "auto", children }) => {
       return /* @__PURE__ */ jsx(Skeleton, { ...defaultProps });
     }
     if (typeof child.props.children === "string") {
+      const hasButtonLikeProps = !!(child.props.onClick || child.props.colorScheme || child.props.variant || child.props.type === "button");
+      if (!hasButtonLikeProps) {
+        const props = getSkeletonProps(child.props, false);
+        return /* @__PURE__ */ jsx(SkeletonText, { noOfLines: 1, ...props });
+      }
       const content = child.props.children.toLowerCase();
       const buttonKeywords = [
         "click",
