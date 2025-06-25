@@ -1,20 +1,22 @@
 # @sedonawebservices/skeletize-chakra-ui
 
-Automatically generate skeleton components for Chakra UI applications with intelligent component detection and size-aware skeletons.
+> Effortless, zero-flash skeleton loading for Chakra UI v3+ — with auto and manual modes, variant support, and TypeScript safety.
+
+Automatically generate skeleton placeholders for Chakra UI applications. Supports all common Chakra components (Button, Text, Heading, Input, Badge, etc.), preserves layout, and offers both auto and manual skeletonization. No content flash, no layout shift, and full TypeScript support.
+
+---
 
 ## ✨ Features
 
-- 🎯 **Smart Component Detection**: Automatically detects Chakra UI components (Button, Text, Heading, etc.)
-- 📏 **Size-Aware Skeletons**: Handles different component sizes (xs, sm, md, lg, xl) with appropriate skeleton dimensions
-- 🎨 **Intelligent Skeleton Types**: Uses appropriate skeleton types (Skeleton, SkeletonText, SkeletonCircle) based on component type
-- ⚡ **Performance**: Lightweight replace strategy - no component double-rendering
-- 📱 **TypeScript Support**: Full TypeScript definitions included
-- 🎨 **Chakra UI v3 Compatible**: Works with the latest Chakra UI version
-- ♻️ **Preserves Layout Structure**: Box, Stack, Flex, etc. maintain their structure
-- 🐛 **Reliable Loading States**: Fixed issues with Button and Text component skeleton conversion
-- 🎭 **Avatar Support**: Enhanced Avatar component detection with circular element fallbacks
-- 🎮 **Auto & Manual Modes**: Choose between automatic skeleton generation or manual control
-- 🎨 **CSS Safe**: Prevents layout collapse in flex containers with proper sizing constraints
+- ⚡ **Zero-Flash Skeletons**: No content flash on load, even for buttons and inputs
+- 🎯 **Smart Component Detection**: Auto-detects Chakra UI components (Button, Text, Heading, etc.)
+- 🎨 **Variants & Customization**: Pulse, fade, static, and custom color support (via props)
+- 🛠 **Manual & Auto Modes**: Use auto-detection or mark elements with `data-skeleton`
+- 📦 **TypeScript Support**: Full types for all exports
+- 🧩 **Chakra UI v3+ Compatible**: Works with the latest Chakra UI
+- ♻️ **Preserves Layout**: No layout shift, keeps your UI structure
+
+---
 
 ## 🚀 Installation
 
@@ -26,24 +28,24 @@ yarn add @sedonawebservices/skeletize-chakra-ui
 pnpm add @sedonawebservices/skeletize-chakra-ui
 ```
 
+---
+
 ## 📦 Usage
 
-### Auto Mode (default)
+### Basic Example
 
 ```tsx
 import { Skeletize } from '@sedonawebservices/skeletize-chakra-ui';
-import { Stack, Heading, Avatar, Text, Image, Button } from '@chakra-ui/react';
+import { Stack, Heading, Text, Button, Input } from '@chakra-ui/react';
 
 function MyComponent() {
   const [loading, setLoading] = useState(true);
-
   return (
-    <Skeletize loading={loading}>
-      <Stack spacing={4}>
+    <Skeletize loading={loading} variant="pulse">
+      <Stack gap={4}>
         <Heading size="lg">Dashboard</Heading>
-        <Avatar name="Jane Doe" />
         <Text>Welcome back! Here's your activity.</Text>
-        <Image src="/banner.jpg" height="200px" />
+        <Input placeholder="Type here..." />
         <Button colorScheme="blue">Submit</Button>
       </Stack>
     </Skeletize>
@@ -61,48 +63,15 @@ function MyComponent() {
 </Skeletize>
 ```
 
-### Size-Aware Skeletons
-
-The component automatically handles different sizes:
+### Skeleton Variants
 
 ```tsx
-import { Skeletize } from '@sedonawebservices/skeletize-chakra-ui';
-
-function MyComponent() {
-  const [loading, setLoading] = useState(true);
-
-  return (
-    <Skeletize loading={loading}>
-      <Stack gap={4}>
-        <Heading size="lg">Large Heading</Heading>
-        <Heading size="sm">Small Heading</Heading>
-        <Button size="xl">Extra Large Button</Button>
-        <Button size="xs">Extra Small Button</Button>
-        <Text fontSize="lg">Large Text</Text>
-        <Text fontSize="sm">Small Text</Text>
-      </Stack>
-    </Skeletize>
-  );
+<Skeletize loading={loading} variant="fade" skeletonColor="#e2e8f0" skeletonEndColor="#f8fafc">
+  <Button>Fade Skeleton</Button>
+</Skeletize>
 ```
 
-## 🔍 Component Detection
-
-The Skeletize component uses multiple strategies to identify Chakra UI components:
-
-1. **Component Name Detection**: Checks `displayName`, function `name`, and forwardRef patterns
-2. **Props-based Detection**: Identifies components by their typical props:
-   - **Text components**: `fontSize`, `fontWeight`, `color`, `textAlign` → `SkeletonText`
-   - **Button components**: `colorScheme`, `variant`, `onClick`, `size` → `Skeleton` with size-appropriate dimensions
-   - **Layout components**: `display`, `flexDirection`, `alignItems`, `gap` → Wraps children
-
-## 📋 Supported Components
-
-- **Text Components**: `Text`, `Heading` → `SkeletonText`
-- **Button Components**: `Button` → `Skeleton` with size-aware dimensions
-  - xs: 24×80px, sm: 32×96px, md: 40×120px, lg: 48×140px, xl: 56×160px
-- **Avatar Components**: `Avatar`, circular elements with avatar-like props → `SkeletonCircle`
-- **Image Components**: `Image` → `Skeleton`
-- **Layout Components**: `Box`, `Stack`, `Flex`, etc. → Wraps children with Skeletize
+---
 
 ## 🛠 API Reference
 
@@ -110,15 +79,23 @@ The Skeletize component uses multiple strategies to identify Chakra UI component
 interface SkeletizeProps {
   loading: boolean; // Whether to show skeletons
   mode?: 'auto' | 'manual'; // Detection mode (default: 'auto')
+  variant?: 'pulse' | 'fade' | 'static' | 'none'; // Skeleton animation variant
+  skeletonColor?: string; // Skeleton base color
+  skeletonEndColor?: string; // Skeleton highlight color
   children: React.ReactNode; // Components to wrap
 }
 ```
 
-| Prop     | Type                 | Default  | Description                                                        |
-| -------- | -------------------- | -------- | ------------------------------------------------------------------ |
-| loading  | `boolean`            | -        | Whether to show skeleton placeholders or actual content            |
-| mode     | `'auto' \| 'manual'` | `'auto'` | Toggle automatic detection vs manual override with `data-skeleton` |
-| children | `React.ReactNode`    | -        | The components to wrap and potentially convert to skeletons        |
+| Prop             | Type                                      | Default   | Description                                                        |
+| ---------------- | ----------------------------------------- | --------- | ------------------------------------------------------------------ |
+| loading          | `boolean`                                 | -         | Whether to show skeleton placeholders or actual content            |
+| mode             | `'auto' \| 'manual'`                      | `'auto'`  | Toggle automatic detection vs manual override with `data-skeleton` |
+| variant          | `'pulse' \| 'fade' \| 'static' \| 'none'` | `'pulse'` | Skeleton animation style                                           |
+| skeletonColor    | `string`                                  | gray.200  | Skeleton base color                                                |
+| skeletonEndColor | `string`                                  | gray.50   | Skeleton highlight color                                           |
+| children         | `React.ReactNode`                         | -         | The components to wrap and potentially convert to skeletons        |
+
+---
 
 ## 🧪 Development
 
@@ -136,12 +113,7 @@ npm run build
 npm run build-ladle
 ```
 
-## 📚 Version History
-
-- **v0.2.2**: 🐛 **Bug Fix Release** - Fixed Button and Text component loading states, enhanced component detection reliability
-- **v0.2.1**: Enhanced component detection with props-based fallbacks and improved Chakra UI v3 compatibility
-- **v0.2.0**: Replaced Storybook with Ladle, improved TypeScript support, scoped package name
-- **v0.1.0**: Initial release with basic auto-skeleton functionality
+---
 
 ## 📄 License
 
